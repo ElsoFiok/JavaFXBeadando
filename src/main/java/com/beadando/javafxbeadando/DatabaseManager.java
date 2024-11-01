@@ -1,5 +1,7 @@
 package com.beadando.javafxbeadando;
 
+import javafx.collections.FXCollections;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,41 @@ public class DatabaseManager {
             System.out.println(e.getMessage());
         }
     }
+    public List<String> executeCustomQuery(String sqlQuery) {
+        List<String> records = new ArrayList<>();
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sqlQuery);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                // Extract data from ResultSet using the correct column names
+                int toronyId = rs.getInt("id"); // Extracting the torony ID (assuming it's the first column)
+                int darab = rs.getInt("darab"); // Extracting the number of towers
+                int teljesitmeny = rs.getInt("teljesitmeny"); // Extracting the power of the tower
+                int kezdev = rs.getInt("kezdev"); // Extracting the year of installation
+                int helyszinId = rs.getInt("helyszinid"); // Assuming helyszinid is in the torony table
+                String helyszinNev = rs.getString("helyszin_nev"); // Extracting the location name (from alias)
+
+                String megyeNev = rs.getString("megye_nev"); // Extracting the county name (from alias)
+                String regio = rs.getString("regio"); // Extracting the region (from alias)
+
+                // Create a concatenated string for each record
+                String record = String.format("Torony ID: %d, Darab: %d, Teljesítmény: %d, Kezdev: %d, " +
+                                "Helyszín ID: %d, Helyszín Név: %s,Megye Név: %s, Régió: %s",
+                        toronyId, darab, teljesitmeny, kezdev, helyszinId, helyszinNev , megyeNev, regio);
+
+                // Add the record to the list
+                records.add(record);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return records;
+    }
+
+
 
     // Helyszin CRUD Methods
     public void addHelyszin(int id, String nev, int megyeid) {
@@ -47,23 +84,30 @@ public class DatabaseManager {
         }
     }
 
-    public List<List<Object>> getAllHelyszin() {
-        List<List<Object>> records = new ArrayList<>();
+    public List<Helyszin> getAllHelyszin() {
+        List<Helyszin> helyszinList = new ArrayList<>();
         String sql = "SELECT * FROM helyszin";
+
         try (Statement stmt = connect().createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
+
             while (rs.next()) {
-                List<Object> record = new ArrayList<>();
-                record.add(rs.getInt("id"));
-                record.add(rs.getString("nev"));
-                record.add(rs.getInt("megyeid"));
-                records.add(record);
+                // Create a new Helyszin object for each row
+                Helyszin helyszin = new Helyszin();
+                helyszin.setId(rs.getInt("id"));
+                helyszin.setName(rs.getString("nev"));
+                helyszin.setMegyeId(rs.getInt("megyeid"));
+
+                // Add the Helyszin object to the list
+                helyszinList.add(helyszin);
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error fetching Helyszin data: " + e.getMessage());
         }
-        return records;
+
+        return helyszinList;
     }
+
 
     public void updateHelyszin(int id, String nev, int megyeid) {
         String sql = "UPDATE helyszin SET nev = ?, megyeid = ? WHERE id = ?";
@@ -103,22 +147,25 @@ public class DatabaseManager {
         }
     }
 
-    public List<List<Object>> getAllMegye() {
-        List<List<Object>> records = new ArrayList<>();
-        String sql = "SELECT * FROM megye";
+    public List<Megye> getAllMegye() {
+        List<Megye> megyeList = new ArrayList<>();
+        String sql = "SELECT id, nev AS name, regio AS region FROM megye"; // Adjusted the SQL to fetch specific fields
+
         try (Statement stmt = connect().createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                List<Object> record = new ArrayList<>();
-                record.add(rs.getInt("id"));
-                record.add(rs.getString("nev"));
-                record.add(rs.getString("regio"));
-                records.add(record);
+                // Create a new Megye object for each row
+                Megye megye = new Megye(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("region")
+                );
+                megyeList.add(megye); // Add the object to the list
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return records;
+        return megyeList; // Return the list of Megye objects
     }
 
     public void updateMegye(int id, String nev, String regio) {
@@ -161,25 +208,28 @@ public class DatabaseManager {
         }
     }
 
-    public List<List<Object>> getAllTorony() {
-        List<List<Object>> records = new ArrayList<>();
+    public List<Torony> getAllTorony() {
+        List<Torony> records = new ArrayList<>();
         String sql = "SELECT * FROM torony";
         try (Statement stmt = connect().createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                List<Object> record = new ArrayList<>();
-                record.add(rs.getInt("id"));
-                record.add(rs.getInt("darab"));
-                record.add(rs.getInt("teljesitmeny"));
-                record.add(rs.getInt("kezdev"));
-                record.add(rs.getInt("helyszinid"));
-                records.add(record);
+                Torony torony = new Torony(
+                        rs.getInt("id"),
+                        rs.getInt("darab"),
+                        rs.getInt("teljesitmeny"),
+                        rs.getInt("kezdev"),
+                        rs.getInt("helyszinid")
+                );
+                records.add(torony);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return records;
     }
+
+
 
     public void updateTorony(int id, int darab, int teljesitmeny, int kezdev, int helyszinid) {
         String sql = "UPDATE torony SET darab = ?, teljesitmeny = ?, kezdev = ?, helyszinid = ? WHERE id = ?";
