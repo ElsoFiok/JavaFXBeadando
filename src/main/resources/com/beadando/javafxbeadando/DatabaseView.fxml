@@ -205,32 +205,53 @@
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
-                                                                <TextArea layoutX="14.0" layoutY="161.0" prefHeight="200.0" prefWidth="200.0" />
-                                                                <Spinner layoutX="236.0" layoutY="161.0" prefHeight="49.0" prefWidth="142.0" />
-                                                                <ComboBox layoutX="14.0" layoutY="84.0" prefWidth="150.0" />
+                                                                <!-- TextArea for 'nev' -->
+                                                                <TextArea fx:id="helyszinNevTextArea" layoutX="14.0" layoutY="161.0" prefHeight="200.0" prefWidth="200.0" />
+
+                                                                <!-- Spinner for 'megyeid' -->
+                                                                <Spinner fx:id="helyszinMegyeidSpinner" layoutX="236.0" layoutY="161.0" prefHeight="49.0" prefWidth="142.0" />
+
+                                                                <!-- ComboBox for 'id' selection -->
+                                                                <ComboBox fx:id="helyszinIdComboBox" layoutX="14.0" layoutY="84.0" prefWidth="150.0" />
+
+                                                                <!-- Labels -->
                                                                 <Label layoutX="14.0" layoutY="60.0" text="id alapjan kivalasztas" />
                                                                 <Label layoutX="14.0" layoutY="137.0" text="nev" />
                                                                 <Label layoutX="236.0" layoutY="137.0" text="megyeid" />
-                                                                <Button layoutX="33.0" layoutY="404.0" mnemonicParsing="false" prefHeight="142.0" prefWidth="605.0" text="modositas" />
+
+                                                                <!-- Update Button -->
+                                                                <Button fx:id="helyszinModositasButton" layoutX="33.0" layoutY="404.0" mnemonicParsing="false" prefHeight="142.0" prefWidth="605.0" text="Módosítás" onAction="#updateHelyszin" />
                                                             </children>
                                                         </AnchorPane>
                                                     </content>
                                                 </Tab>
+
                                                 <Tab text="Megye">
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
-                                                                <ComboBox layoutX="14.0" layoutY="117.0" prefWidth="150.0" />
+                                                                <!-- ComboBox for selecting Megye by id -->
+                                                                <ComboBox fx:id="megyeIdComboBox" layoutX="14.0" layoutY="117.0" prefWidth="150.0" />
+                                                                <!-- Labels for user interface -->
                                                                 <Label layoutX="14.0" layoutY="89.0" text="id alapjan kivalasztas" />
-                                                                <TextArea layoutX="14.0" layoutY="202.0" prefHeight="200.0" prefWidth="200.0" />
-                                                                <TextArea layoutX="247.0" layoutY="202.0" prefHeight="200.0" prefWidth="200.0" />
+
+                                                                <!-- TextArea for Megye's Name -->
+                                                                <TextArea fx:id="megyeNevTextArea" layoutX="14.0" layoutY="202.0" prefHeight="200.0" prefWidth="200.0" />
+
+                                                                <!-- TextArea for Megye's Region -->
+                                                                <TextArea fx:id="megyeRegioTextArea" layoutX="247.0" layoutY="202.0" prefHeight="200.0" prefWidth="200.0" />
+
+                                                                <!-- Labels for Name and Region -->
                                                                 <Label layoutX="14.0" layoutY="174.0" text="nev" />
                                                                 <Label layoutX="247.0" layoutY="174.0" text="regio" />
-                                                                <Button layoutX="14.0" layoutY="437.0" mnemonicParsing="false" prefHeight="184.0" prefWidth="429.0" text="modositas" />
+
+                                                                <!-- Button for update action -->
+                                                                <Button fx:id="megyeModositasButton" layoutX="14.0" layoutY="437.0" mnemonicParsing="false" prefHeight="184.0" prefWidth="429.0" text="modositas" />
                                                             </children>
                                                         </AnchorPane>
                                                     </content>
                                                 </Tab>
+
                                             </tabs>
                                         </TabPane>
                                     </children>

@@ -79,6 +79,29 @@ public class MainController {
     @FXML
     private ComboBox<Integer> updateToronyIdComboBox = new ComboBox<Integer>();
     @FXML
+    private TextArea helyszinNevTextArea = new TextArea(); // For the name of the Helyszin
+    @FXML
+    private Spinner<Integer> helyszinMegyeidSpinner=new Spinner<Integer>(); // For the MegyeID
+    @FXML
+    private ComboBox<Integer> helyszinIdComboBox=new ComboBox<Integer>(); // For selecting the ID
+    @FXML
+    private Button helyszinModositasButton=new Button(); // The button to trigger the update
+    @FXML
+    private ComboBox<Integer> megyeIdComboBox = new ComboBox<Integer>(); // ComboBox for selecting Megye by id
+
+    @FXML
+    private TextArea megyeNevTextArea=new TextArea(); // TextArea for Megye name
+
+    @FXML
+    private TextArea megyeRegioTextArea=new TextArea(); // TextArea for Megye region
+
+    @FXML
+    private Button megyeModositasButton=new Button(); // Button for updating Megye
+
+
+
+
+    @FXML
     private void updateTorony() {
         Integer selectedId = updateToronyIdComboBox.getValue();
         if (selectedId != null) {
@@ -136,6 +159,34 @@ public class MainController {
         List<Integer> toronyIds = dbManager.getAllToronyIds(); // This is a method you'd create to get all Torony IDs
         ObservableList<Integer> toronyIdList = FXCollections.observableArrayList(toronyIds);
         updateToronyIdComboBox.setItems(toronyIdList);
+        List<Helyszin> helyszinList = dbManager.getAllHelyszin();  // You may need to create this method
+
+        helyszinMegyeidSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 1));
+
+        ObservableList<Integer> ids = FXCollections.observableArrayList();
+        for (Helyszin helyszin : helyszinList) {
+            ids.add(helyszin.getId()); // Populate ComboBox with Helyszin IDs
+        }
+        helyszinIdComboBox.setItems(ids);  // Set the ComboBox's items
+
+        // Populate ComboBox with Megye IDs (can be populated using a method like getAllMegyeIds())
+        List<Integer> megyeIds = dbManager.getAllMegyeIds();  // Assuming you have this method in your DatabaseManager
+        megyeIdComboBox.getItems().addAll(megyeIds);
+
+        // Add an Action Listener for the "Módosítás" button
+        megyeModositasButton.setOnAction(event -> updateMegye());
+
+    }
+    @FXML
+    private void updateHelyszin() {
+        System.out.println("Button clicked!");  // This will help you verify if the method is being called
+        int id = helyszinIdComboBox.getValue(); // Get selected Helyszin ID
+        String nev = helyszinNevTextArea.getText(); // Get the name from TextArea
+        int megyeid = helyszinMegyeidSpinner.getValue(); // Get MegyeID from Spinner
+
+        // Call DatabaseManager method to update the Helyszin
+        DatabaseManager dbManager = new DatabaseManager();
+        dbManager.updateHelyszin(id, nev, megyeid); // Update Helyszin in database
     }
     @FXML
     public void handleAddMegyeButtonClick(ActionEvent event) {
@@ -151,6 +202,18 @@ public class MainController {
         } else {
             // Handle error (e.g., show a message)
             System.out.println("Please fill in both fields.");
+        }
+    }
+    private void updateMegye() {
+        Integer selectedId = megyeIdComboBox.getValue();
+        String nev = megyeNevTextArea.getText();
+        String regio = megyeRegioTextArea.getText();
+
+        if (selectedId != null && !nev.isEmpty() && !regio.isEmpty()) {
+            // Call your updateMegye method in DatabaseManager
+            dbManager.updateMegye(selectedId, nev, regio);
+        } else {
+            System.out.println("Please fill in all fields and select a valid Megye ID.");
         }
     }
     @FXML

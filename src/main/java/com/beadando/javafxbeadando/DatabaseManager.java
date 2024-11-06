@@ -115,11 +115,12 @@ public class DatabaseManager {
             pstmt.setInt(2, megyeid);
             pstmt.setInt(3, id);
             pstmt.executeUpdate();
-            System.out.println("Helyszin updated: " + nev);
+            System.out.println("Helyszin updated: " + id);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
+
 
     public void deleteHelyszin(int id) {
         String sql = "DELETE FROM helyszin WHERE id = ?";
@@ -173,11 +174,25 @@ public class DatabaseManager {
             pstmt.setString(2, regio);
             pstmt.setInt(3, id);
             pstmt.executeUpdate();
-            System.out.println("Megye updated: " + nev);
+            System.out.println("Megye updated: " + id);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
+    public List<Integer> getAllMegyeIds() {
+        List<Integer> ids = new ArrayList<>();
+        String sql = "SELECT id FROM megye"; // Query only the ids from megye table
+        try (Statement stmt = connect().createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                ids.add(rs.getInt("id"));  // Add the ID to the list
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return ids;
+    }
+
 
     public void deleteMegye(int id) {
         String sql = "DELETE FROM megye WHERE id = ?";
