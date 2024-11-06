@@ -42,14 +42,59 @@ public class MainController {
 
     @FXML
     private Button listazasButton; // The button to trigger the listing action
+    @FXML
+    private Spinner<Integer> darabSpinner = new Spinner<Integer>();
 
+    @FXML
+    private Spinner<Integer> teljesitmenySpinner = new Spinner<Integer>();
+
+    @FXML
+    private Spinner<Integer> kezdevSpinner = new Spinner<Integer>();
+
+    @FXML
+    private Spinner<Integer> megyeidSpinner = new Spinner<Integer>();
+
+
+    @FXML
+    private Button addButtonTorony;
+    private int darabValue;
+    private int teljesitmenyValue;
+    private int kezdevValue;
+    private int megyeidValue;
     // Declare DatabaseManager as an instance variable
     private final DatabaseManager dbManager = new DatabaseManager();
 
     @FXML
+    public void initialize() {
+        // Set up the spinners with ranges and default values
+        darabSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1));
+        teljesitmenySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(200, 3000, 200));
+        kezdevSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2000, 2024, 2000));
+        megyeidSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 1));
+    }
+    @FXML
+    private void handleAddButtonTorony() {
+        // Retrieve the values from each spinner and store them
+        darabValue = darabSpinner.getValue();
+        teljesitmenyValue = teljesitmenySpinner.getValue();
+        kezdevValue = kezdevSpinner.getValue();
+        megyeidValue = megyeidSpinner.getValue();
+
+        // Example output to show that values are stored
+        System.out.println("Darab: " + darabValue);
+        System.out.println("Teljesítmény: " + teljesitmenyValue);
+        System.out.println("Kezdév: " + kezdevValue);
+        System.out.println("Megyeid: " + megyeidValue);
+
+        // Additional processing can be done here
+        dbManager.addTorony( darabValue, teljesitmenyValue, kezdevValue, megyeidValue);
+    }
+    @FXML
     private void handleOpenDatabaseMenu(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("DatabaseView.fxml"));
+
+
             Parent root = loader.load();
             Scene scene = new Scene(root);
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

@@ -193,16 +193,15 @@ public class DatabaseManager {
     }
 
     // Torony CRUD Methods
-    public void addTorony(int id, int darab, int teljesitmeny, int kezdev, int helyszinid) {
-        String sql = "INSERT INTO torony (id, darab, teljesitmeny, kezdev, helyszinid) VALUES (?, ?, ?, ?, ?)";
+    public void addTorony(int darab, int teljesitmeny, int kezdev, int helyszinid) {
+        String sql = "INSERT INTO torony (darab, teljesitmeny, kezdev, helyszinid) VALUES (?, ?, ?, ?)";
         try (PreparedStatement pstmt = connect().prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            pstmt.setInt(2, darab);
-            pstmt.setInt(3, teljesitmeny);
-            pstmt.setInt(4, kezdev);
-            pstmt.setInt(5, helyszinid);
+            pstmt.setInt(1, darab);
+            pstmt.setInt(2, teljesitmeny);
+            pstmt.setInt(3, kezdev);
+            pstmt.setInt(4, helyszinid);
             pstmt.executeUpdate();
-            System.out.println("Torony added: " + id);
+            System.out.println("Torony added with auto-incremented ID.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

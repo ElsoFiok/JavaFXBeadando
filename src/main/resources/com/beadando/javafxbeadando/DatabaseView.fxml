@@ -51,11 +51,11 @@
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="504.0" prefWidth="597.0">
                                                             <children>
-                                                                <Spinner layoutX="14.0" layoutY="188.0" prefHeight="57.0" prefWidth="213.0" />
-                                                                <Button layoutX="263.0" layoutY="604.0" mnemonicParsing="false" prefHeight="122.0" prefWidth="751.0" text="Rekord hozzáadása" />
-                                                                <Spinner layoutX="786.0" layoutY="188.0" prefHeight="57.0" prefWidth="213.0" />
-                                                                <Spinner layoutX="1049.0" layoutY="188.0" prefHeight="57.0" prefWidth="213.0" />
-                                                                <Spinner layoutX="263.0" layoutY="188.0" prefHeight="57.0" prefWidth="213.0" />
+                                                                <Spinner fx:id="darabSpinner" layoutX="14.0" layoutY="188.0" prefHeight="57.0" prefWidth="213.0" />
+                                                                <Button fx:id="addButtonTorony" layoutX="263.0" layoutY="604.0" mnemonicParsing="false" prefHeight="122.0" prefWidth="751.0" text="Rekord hozzáadása" onAction="#handleAddButtonTorony" />
+                                                                <Spinner fx:id="kezdevSpinner" layoutX="786.0" layoutY="188.0" prefHeight="57.0" prefWidth="213.0" />
+                                                                <Spinner fx:id="megyeidSpinner" layoutX="1049.0" layoutY="188.0" prefHeight="57.0" prefWidth="213.0" />
+                                                                <Spinner fx:id="teljesitmenySpinner" layoutX="263.0" layoutY="188.0" prefHeight="57.0" prefWidth="213.0" />
                                                                 <Label layoutX="14.0" layoutY="134.0" prefHeight="54.0" prefWidth="214.0" text="Darab" />
                                                                 <Label layoutX="263.0" layoutY="134.0" prefHeight="54.0" prefWidth="214.0" text="Tejlesítmény" />
                                                                 <Label layoutX="786.0" layoutY="134.0" prefHeight="54.0" prefWidth="214.0" text="Kezdév" />
