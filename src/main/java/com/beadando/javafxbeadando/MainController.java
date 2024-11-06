@@ -12,11 +12,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,9 +50,50 @@ public class MainController {
     private Spinner<Integer> kezdevSpinner = new Spinner<Integer>();
 
     @FXML
-    private Spinner<Integer> megyeidSpinner = new Spinner<Integer>();
+    private Spinner<Integer> helyszinidSpinner = new Spinner<Integer>();
+    @FXML
+    private Button rekordHozzaadButton = new Button();  // Button for adding a new record
+    @FXML
+    private TextArea helyszinNameTextArea = new TextArea();  // TextArea for entering the name of the location
+    @FXML
+    private Spinner<Integer> megyeidSpinner = new Spinner<Integer>();  // Spinner for selecting the County ID (MegyeID)
 
+    @FXML
+    private Button megyeAddButton = new Button();  // The button to trigger the adding action
 
+    @FXML
+    private TextArea nevTextArea = new TextArea();   // TextArea for "Név"
+
+    @FXML
+    private TextArea regioTextArea = new TextArea(); // TextArea for "Régió"
+    @FXML
+    private Spinner<Integer> updateToronyDarabBemenet =new Spinner<Integer>();
+    @FXML
+    private Spinner<Integer> updateToronyTeljesitmenyBemenet =new Spinner<Integer>();
+    @FXML
+    private Spinner<Integer> updateToronyKezdevBemenet =new Spinner<Integer>();
+    @FXML
+    private Spinner<Integer> updateToronyHelyszinidBemenet =new Spinner<Integer>();
+    @FXML
+    private Spinner<Integer> updateToronyIdBemenet =new Spinner<Integer>();
+    @FXML
+    private ComboBox<Integer> updateToronyIdComboBox = new ComboBox<Integer>();
+    @FXML
+    private void updateTorony() {
+        Integer selectedId = updateToronyIdComboBox.getValue();
+        if (selectedId != null) {
+            // Get the updated values from the spinners
+            int darab = updateToronyDarabBemenet.getValue();
+            int teljesitmeny = updateToronyTeljesitmenyBemenet.getValue();
+            int kezdev = updateToronyKezdevBemenet.getValue();
+            int helyszinid = updateToronyHelyszinidBemenet.getValue();
+
+            // Call the updateTorony method from your DatabaseManager
+            dbManager.updateTorony(selectedId, darab, teljesitmeny, kezdev, helyszinid);
+        } else {
+            System.out.println("Please select a Torony ID to update.");
+        }
+    }
     @FXML
     private Button addButtonTorony;
     private int darabValue;
@@ -70,7 +109,49 @@ public class MainController {
         darabSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1));
         teljesitmenySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(200, 3000, 200));
         kezdevSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2000, 2024, 2000));
-        megyeidSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 1));
+        helyszinidSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 1));
+        SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, 1);
+        megyeidSpinner.setValueFactory(valueFactory);
+        rekordHozzaadButton.setOnAction(event -> addHelyszinRecord());
+        // Initialize the "Darab" Spinner
+        SpinnerValueFactory<Integer> darabValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1); // min, max, initial value
+        updateToronyDarabBemenet.setValueFactory(darabValueFactory);
+
+        // Initialize the "Teljesítmény" Spinner
+        SpinnerValueFactory<Integer> teljesitmenyValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 3000, 100); // min, max, initial value
+        updateToronyTeljesitmenyBemenet.setValueFactory(teljesitmenyValueFactory);
+
+        // Initialize the "Kezdés Éve" Spinner
+        SpinnerValueFactory<Integer> kezdevValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(2000, 2025, 2023); // min, max, initial value
+        updateToronyKezdevBemenet.setValueFactory(kezdevValueFactory);
+
+        // Initialize the "Helyszín ID" Spinner (you might want to populate it dynamically later)
+        SpinnerValueFactory<Integer> helyszinidValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1); // Placeholder values
+        updateToronyHelyszinidBemenet.setValueFactory(helyszinidValueFactory);
+
+        // Initialize the "ID" Spinner for editing an existing record
+        SpinnerValueFactory<Integer> idValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1); // Placeholder values
+        updateToronyIdBemenet.setValueFactory(idValueFactory);
+
+        List<Integer> toronyIds = dbManager.getAllToronyIds(); // This is a method you'd create to get all Torony IDs
+        ObservableList<Integer> toronyIdList = FXCollections.observableArrayList(toronyIds);
+        updateToronyIdComboBox.setItems(toronyIdList);
+    }
+    @FXML
+    public void handleAddMegyeButtonClick(ActionEvent event) {
+        // Get the values from the TextArea fields
+        String nev = nevTextArea.getText().trim();
+        String regio = regioTextArea.getText().trim();
+
+        // Check that the input fields are not empty
+        if (!nev.isEmpty() && !regio.isEmpty()) {
+            // Call the addMegye method in your DatabaseManager class
+            // Assuming that the "id" is auto-incremented
+            dbManager.addMegye(nev, regio);  // Make sure this method accepts these parameters
+        } else {
+            // Handle error (e.g., show a message)
+            System.out.println("Please fill in both fields.");
+        }
     }
     @FXML
     private void handleAddButtonTorony() {
@@ -78,7 +159,7 @@ public class MainController {
         darabValue = darabSpinner.getValue();
         teljesitmenyValue = teljesitmenySpinner.getValue();
         kezdevValue = kezdevSpinner.getValue();
-        megyeidValue = megyeidSpinner.getValue();
+        megyeidValue = helyszinidSpinner.getValue();
 
         // Example output to show that values are stored
         System.out.println("Darab: " + darabValue);
@@ -89,6 +170,8 @@ public class MainController {
         // Additional processing can be done here
         dbManager.addTorony( darabValue, teljesitmenyValue, kezdevValue, megyeidValue);
     }
+
+
     @FXML
     private void handleOpenDatabaseMenu(ActionEvent event) {
         try {
@@ -104,7 +187,19 @@ public class MainController {
             e.printStackTrace();
         }
     }
+    private void addHelyszinRecord() {
+        String helyszinNev = helyszinNameTextArea.getText();  // Get the location name from the TextArea
+        int megyeid = megyeidSpinner.getValue();  // Get the selected Megye ID from the Spinner
 
+        // Make sure that name is not empty
+        if (helyszinNev.isEmpty()) {
+            System.out.println("Location name cannot be empty!");
+            return;
+        }
+
+        // Call the DatabaseManager to insert the new location record
+        dbManager.addHelyszin(helyszinNev, megyeid);
+    }
     @FXML
     private void loadToronyData() {
         // Clear any existing columns or data in the table
@@ -214,7 +309,7 @@ public class MainController {
         boolean darabLessThan5 = checkBox.isSelected();
 
         StringBuilder sqlQuery = new StringBuilder(
-                "SELECT torony.*, helyszin.nev AS helyszin_nev, megye.nev AS megye_nev, megye.regio AS regio " +
+                "SELECT torony.*, helyszin.nev AS helyszin_nev, megye.id AS megye_id,megye.nev AS megye_nev, megye.regio AS regio " +
                         "FROM torony " +
                         "JOIN helyszin ON torony.helyszinid = helyszin.id " +
                         "JOIN megye ON helyszin.megyeid = megye.id " +
@@ -233,7 +328,6 @@ public class MainController {
         if (darabLessThan5) {
             sqlQuery.append(" AND darab < 5");
         }
-
         // Execute the query and populate TableView
         List<String> toronyData = dbManager.executeCustomQuery(sqlQuery.toString());
 

@@ -49,14 +49,14 @@ public class DatabaseManager {
                 int kezdev = rs.getInt("kezdev"); // Extracting the year of installation
                 int helyszinId = rs.getInt("helyszinid"); // Assuming helyszinid is in the torony table
                 String helyszinNev = rs.getString("helyszin_nev"); // Extracting the location name (from alias)
-
+                int megyeid = rs.getInt("megye_id");
                 String megyeNev = rs.getString("megye_nev"); // Extracting the county name (from alias)
                 String regio = rs.getString("regio"); // Extracting the region (from alias)
 
                 // Create a concatenated string for each record
                 String record = String.format("Torony ID: %d, Darab: %d, Teljesítmény: %d, Kezdev: %d, " +
-                                "Helyszín ID: %d, Helyszín Név: %s,Megye Név: %s, Régió: %s",
-                        toronyId, darab, teljesitmeny, kezdev, helyszinId, helyszinNev , megyeNev, regio);
+                                "Helyszín ID: %d, Helyszín Név: %s,Megye ID: %d,Megye Név: %s, Régió: %s",
+                        toronyId, darab, teljesitmeny, kezdev, helyszinId, helyszinNev ,megyeid, megyeNev, regio);
 
                 // Add the record to the list
                 records.add(record);
@@ -71,14 +71,13 @@ public class DatabaseManager {
 
 
     // Helyszin CRUD Methods
-    public void addHelyszin(int id, String nev, int megyeid) {
-        String sql = "INSERT INTO helyszin (id, nev, megyeid) VALUES (?, ?, ?)";
+    public void addHelyszin(String nev, int megyeid) {
+        String sql = "INSERT INTO helyszin (nev, megyeid) VALUES (?, ?)";
         try (PreparedStatement pstmt = connect().prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            pstmt.setString(2, nev);
-            pstmt.setInt(3, megyeid);
+            pstmt.setString(1, nev);
+            pstmt.setInt(2, megyeid);
             pstmt.executeUpdate();
-            System.out.println("Helyszin added: " + nev);
+            System.out.println("Helyszín added: " + nev);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -134,12 +133,11 @@ public class DatabaseManager {
     }
 
     // Megye CRUD Methods
-    public void addMegye(int id, String nev, String regio) {
-        String sql = "INSERT INTO megye (id, nev, regio) VALUES (?, ?, ?)";
+    public void addMegye( String nev, String regio) {
+        String sql = "INSERT INTO megye (nev, regio) VALUES (?, ?)";
         try (PreparedStatement pstmt = connect().prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            pstmt.setString(2, nev);
-            pstmt.setString(3, regio);
+            pstmt.setString(1, nev);
+            pstmt.setString(2, regio);
             pstmt.executeUpdate();
             System.out.println("Megye added: " + nev);
         } catch (SQLException e) {
@@ -227,6 +225,19 @@ public class DatabaseManager {
         }
         return records;
     }
+    public List<Integer> getAllToronyIds() {
+        List<Integer> toronyIds = new ArrayList<>();
+        String sql = "SELECT id FROM torony"; // Only fetching the 'id' column from the torony table
+        try (Statement stmt = connect().createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                toronyIds.add(rs.getInt("id")); // Add the 'id' to the list
+            }
+        } catch (SQLException e) {
+            System.out.println("Error fetching Torony IDs: " + e.getMessage());
+        }
+        return toronyIds;
+    }
 
 
 
@@ -244,6 +255,7 @@ public class DatabaseManager {
             System.out.println(e.getMessage());
         }
     }
+
 
     public void deleteTorony(int id) {
         String sql = "DELETE FROM torony WHERE id = ?";

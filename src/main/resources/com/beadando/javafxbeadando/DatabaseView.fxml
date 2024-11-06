@@ -54,12 +54,12 @@
                                                                 <Spinner fx:id="darabSpinner" layoutX="14.0" layoutY="188.0" prefHeight="57.0" prefWidth="213.0" />
                                                                 <Button fx:id="addButtonTorony" layoutX="263.0" layoutY="604.0" mnemonicParsing="false" prefHeight="122.0" prefWidth="751.0" text="Rekord hozzáadása" onAction="#handleAddButtonTorony" />
                                                                 <Spinner fx:id="kezdevSpinner" layoutX="786.0" layoutY="188.0" prefHeight="57.0" prefWidth="213.0" />
-                                                                <Spinner fx:id="megyeidSpinner" layoutX="1049.0" layoutY="188.0" prefHeight="57.0" prefWidth="213.0" />
+                                                                <Spinner fx:id="helyszinidSpinner" layoutX="1049.0" layoutY="188.0" prefHeight="57.0" prefWidth="213.0" />
                                                                 <Spinner fx:id="teljesitmenySpinner" layoutX="263.0" layoutY="188.0" prefHeight="57.0" prefWidth="213.0" />
                                                                 <Label layoutX="14.0" layoutY="134.0" prefHeight="54.0" prefWidth="214.0" text="Darab" />
                                                                 <Label layoutX="263.0" layoutY="134.0" prefHeight="54.0" prefWidth="214.0" text="Tejlesítmény" />
                                                                 <Label layoutX="786.0" layoutY="134.0" prefHeight="54.0" prefWidth="214.0" text="Kezdév" />
-                                                                <Label layoutX="1049.0" layoutY="134.0" prefHeight="54.0" prefWidth="214.0" text="Megyeid" />
+                                                                <Label layoutX="1049.0" layoutY="134.0" prefHeight="54.0" prefWidth="214.0" text="HelyszínID" />
                                                             </children>
                                                         </AnchorPane>
                                                     </content>
@@ -68,9 +68,16 @@
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
-                                                                <Button layoutX="263.0" layoutY="604.0" mnemonicParsing="false" prefHeight="122.0" prefWidth="751.0" text="Rekord hozzáadása" />
-                                                                <TextArea layoutX="56.0" layoutY="170.0" prefHeight="200.0" prefWidth="527.0" />
-                                                                <Spinner layoutX="625.0" layoutY="170.0" prefHeight="200.0" prefWidth="618.0" />
+                                                                <!-- Button to add record -->
+                                                                <Button fx:id="rekordHozzaadButton" layoutX="263.0" layoutY="604.0" mnemonicParsing="false" prefHeight="122.0" prefWidth="751.0" text="Rekord hozzáadása" />
+
+                                                                <!-- TextArea for entering location name -->
+                                                                <TextArea fx:id="helyszinNameTextArea" layoutX="56.0" layoutY="170.0" prefHeight="200.0" prefWidth="527.0" />
+
+                                                                <!-- Spinner for selecting County ID -->
+                                                                <Spinner fx:id="megyeidSpinner" layoutX="625.0" layoutY="170.0" prefHeight="200.0" prefWidth="618.0" />
+
+                                                                <!-- Labels for the fields -->
                                                                 <Label layoutX="56.0" layoutY="118.0" prefHeight="54.0" prefWidth="527.0" text="Név" />
                                                                 <Label layoutX="624.0" layoutY="118.0" prefHeight="54.0" prefWidth="621.0" text="MegyeID" />
                                                             </children>
@@ -81,10 +88,20 @@
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
-                                                                <Button layoutX="263.0" layoutY="604.0" mnemonicParsing="false" prefHeight="122.0" prefWidth="751.0" text="Rekord hozzáadása" />
-                                                                <TextArea layoutX="14.0" layoutY="200.0" prefHeight="200.0" prefWidth="527.0" />
+                                                                <!-- Add button to trigger adding a record -->
+                                                                <Button layoutX="263.0" layoutY="604.0" mnemonicParsing="false" prefHeight="122.0" prefWidth="751.0"
+                                                                        text="Rekord hozzáadása" fx:id="megyeAddButton" onAction="#handleAddMegyeButtonClick"/>
+
+                                                                <!-- TextArea for "Név" -->
+                                                                <TextArea layoutX="14.0" layoutY="200.0" prefHeight="200.0" prefWidth="527.0" fx:id="nevTextArea"/>
+
+                                                                <!-- Label for "Név" -->
                                                                 <Label layoutX="14.0" layoutY="146.0" prefHeight="54.0" prefWidth="527.0" text="Név" />
-                                                                <TextArea layoutX="727.0" layoutY="200.0" prefHeight="200.0" prefWidth="527.0" />
+
+                                                                <!-- TextArea for "Régió" -->
+                                                                <TextArea layoutX="727.0" layoutY="200.0" prefHeight="200.0" prefWidth="527.0" fx:id="regioTextArea"/>
+
+                                                                <!-- Label for "Régió" -->
                                                                 <Label layoutX="727.0" layoutY="146.0" prefHeight="54.0" prefWidth="527.0" text="Régió" />
                                                             </children>
                                                         </AnchorPane>
@@ -161,21 +178,29 @@
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
-                                                                <Spinner layoutX="27.0" layoutY="147.0" />
-                                                                <Spinner layoutX="204.0" layoutY="147.0" />
-                                                                <Spinner layoutX="375.0" layoutY="147.0" />
-                                                                <Spinner layoutX="555.0" layoutY="147.0" />
-                                                                <ComboBox layoutX="27.0" layoutY="90.0" prefWidth="150.0" />
+                                                                <!-- Spinners for Torony fields -->
+                                                                <Spinner fx:id="updateToronyDarabBemenet" layoutX="27.0" layoutY="147.0" prefHeight="30.0" prefWidth="150.0" />
+                                                                <Spinner fx:id="updateToronyTeljesitmenyBemenet" layoutX="204.0" layoutY="147.0" prefHeight="30.0" prefWidth="150.0" />
+                                                                <Spinner fx:id="updateToronyKezdevBemenet" layoutX="375.0" layoutY="147.0" prefHeight="30.0" prefWidth="150.0" />
+                                                                <Spinner fx:id="updateToronyHelyszinidBemenet" layoutX="555.0" layoutY="147.0" prefHeight="30.0" prefWidth="150.0" />
+
+                                                                <!-- ComboBox for ID selection (for the record you want to update) -->
+                                                                <ComboBox fx:id="updateToronyIdComboBox" layoutX="27.0" layoutY="90.0" prefWidth="150.0" />
+
+                                                                <!-- Labels for each field -->
                                                                 <Label layoutX="27.0" layoutY="60.0" prefHeight="17.0" prefWidth="125.0" text="id kiválasztás" />
                                                                 <Label layoutX="27.0" layoutY="130.0" text="darab" />
                                                                 <Label layoutX="204.0" layoutY="130.0" text="teljesitmeny" />
                                                                 <Label layoutX="375.0" layoutY="130.0" text="kezdev" />
                                                                 <Label layoutX="555.0" layoutY="130.0" text="helyszinid" />
-                                                                <Button layoutX="27.0" layoutY="196.0" mnemonicParsing="false" prefHeight="198.0" prefWidth="695.0" text="Módosítás" />
+
+                                                                <!-- Button to modify existing record -->
+                                                                <Button fx:id="modifyToronyButton" layoutX="27.0" layoutY="196.0" mnemonicParsing="false" prefHeight="198.0" prefWidth="695.0" text="Módosítás" onAction="#updateTorony" />
                                                             </children>
                                                         </AnchorPane>
                                                     </content>
                                                 </Tab>
+
                                                 <Tab text="Helyszín">
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
