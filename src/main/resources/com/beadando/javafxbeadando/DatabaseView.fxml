@@ -4,9 +4,6 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.Tab?>
@@ -21,17 +18,6 @@
 <?import java.lang.Integer?>
 <VBox alignment="CENTER" prefHeight="821.0" prefWidth="1276.0" spacing="10" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.beadando.javafxbeadando.MainController">
     <children>
-        <MenuBar VBox.vgrow="NEVER">
-            <menus>
-                <Menu mnemonicParsing="false" text="Másik oldalak">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Főoldal" />
-                        <MenuItem mnemonicParsing="false" text="Soap oldal" />
-                        <MenuItem mnemonicParsing="false" text="Forex oldal" />
-                    </items>
-                </Menu>
-            </menus>
-        </MenuBar>
         <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
             <children>
                 <TabPane prefHeight="796.0" prefWidth="1276.0" tabClosingPolicy="UNAVAILABLE">
@@ -68,16 +54,13 @@
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
-                                                                <!-- Button to add record -->
+
                                                                 <Button fx:id="rekordHozzaadButton" layoutX="263.0" layoutY="604.0" mnemonicParsing="false" prefHeight="122.0" prefWidth="751.0" text="Rekord hozzáadása" />
 
-                                                                <!-- TextArea for entering location name -->
                                                                 <TextArea fx:id="helyszinNameTextArea" layoutX="56.0" layoutY="170.0" prefHeight="200.0" prefWidth="527.0" />
 
-                                                                <!-- Spinner for selecting County ID -->
                                                                 <Spinner fx:id="megyeidSpinner" layoutX="625.0" layoutY="170.0" prefHeight="200.0" prefWidth="618.0" />
 
-                                                                <!-- Labels for the fields -->
                                                                 <Label layoutX="56.0" layoutY="118.0" prefHeight="54.0" prefWidth="527.0" text="Név" />
                                                                 <Label layoutX="624.0" layoutY="118.0" prefHeight="54.0" prefWidth="621.0" text="MegyeID" />
                                                             </children>
@@ -88,20 +71,16 @@
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
-                                                                <!-- Add button to trigger adding a record -->
+
                                                                 <Button layoutX="263.0" layoutY="604.0" mnemonicParsing="false" prefHeight="122.0" prefWidth="751.0"
                                                                         text="Rekord hozzáadása" fx:id="megyeAddButton" onAction="#handleAddMegyeButtonClick"/>
 
-                                                                <!-- TextArea for "Név" -->
                                                                 <TextArea layoutX="14.0" layoutY="200.0" prefHeight="200.0" prefWidth="527.0" fx:id="nevTextArea"/>
 
-                                                                <!-- Label for "Név" -->
                                                                 <Label layoutX="14.0" layoutY="146.0" prefHeight="54.0" prefWidth="527.0" text="Név" />
 
-                                                                <!-- TextArea for "Régió" -->
                                                                 <TextArea layoutX="727.0" layoutY="200.0" prefHeight="200.0" prefWidth="527.0" fx:id="regioTextArea"/>
 
-                                                                <!-- Label for "Régió" -->
                                                                 <Label layoutX="727.0" layoutY="146.0" prefHeight="54.0" prefWidth="527.0" text="Régió" />
                                                             </children>
                                                         </AnchorPane>
@@ -123,9 +102,9 @@
                                             </font>
                                         </Label>
                                         <TableView layoutX="14.0" layoutY="75.0" prefHeight="680.0" prefWidth="1250.0" fx:id="teljesTableView" />
-                              <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Torony"  onAction="#loadToronyData" />
-                              <Button layoutX="14.0" layoutY="40.0" mnemonicParsing="false" text="Helyszin"  onAction="#loadHelyszinData" />
-                              <Button layoutX="66.0" layoutY="40.0" mnemonicParsing="false" text="Megye"  onAction="#loadMegyeData" />
+                                        <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Torony"  onAction="#loadToronyData" />
+                                        <Button layoutX="14.0" layoutY="40.0" mnemonicParsing="false" text="Helyszin"  onAction="#loadHelyszinData" />
+                                        <Button layoutX="66.0" layoutY="40.0" mnemonicParsing="false" text="Megye"  onAction="#loadMegyeData" />
                                     </children>
                                 </AnchorPane>
                             </content>
@@ -178,23 +157,20 @@
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
-                                                                <!-- Spinners for Torony fields -->
+
                                                                 <Spinner fx:id="updateToronyDarabBemenet" layoutX="27.0" layoutY="147.0" prefHeight="30.0" prefWidth="150.0" />
                                                                 <Spinner fx:id="updateToronyTeljesitmenyBemenet" layoutX="204.0" layoutY="147.0" prefHeight="30.0" prefWidth="150.0" />
                                                                 <Spinner fx:id="updateToronyKezdevBemenet" layoutX="375.0" layoutY="147.0" prefHeight="30.0" prefWidth="150.0" />
                                                                 <Spinner fx:id="updateToronyHelyszinidBemenet" layoutX="555.0" layoutY="147.0" prefHeight="30.0" prefWidth="150.0" />
 
-                                                                <!-- ComboBox for ID selection (for the record you want to update) -->
                                                                 <ComboBox fx:id="updateToronyIdComboBox" layoutX="27.0" layoutY="90.0" prefWidth="150.0" />
 
-                                                                <!-- Labels for each field -->
                                                                 <Label layoutX="27.0" layoutY="60.0" prefHeight="17.0" prefWidth="125.0" text="id kiválasztás" />
                                                                 <Label layoutX="27.0" layoutY="130.0" text="darab" />
                                                                 <Label layoutX="204.0" layoutY="130.0" text="teljesitmeny" />
                                                                 <Label layoutX="375.0" layoutY="130.0" text="kezdev" />
                                                                 <Label layoutX="555.0" layoutY="130.0" text="helyszinid" />
 
-                                                                <!-- Button to modify existing record -->
                                                                 <Button fx:id="modifyToronyButton" layoutX="27.0" layoutY="196.0" mnemonicParsing="false" prefHeight="198.0" prefWidth="695.0" text="Módosítás" onAction="#updateTorony" />
                                                             </children>
                                                         </AnchorPane>
@@ -205,21 +181,17 @@
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
-                                                                <!-- TextArea for 'nev' -->
+
                                                                 <TextArea fx:id="helyszinNevTextArea" layoutX="14.0" layoutY="161.0" prefHeight="200.0" prefWidth="200.0" />
 
-                                                                <!-- Spinner for 'megyeid' -->
                                                                 <Spinner fx:id="helyszinMegyeidSpinner" layoutX="236.0" layoutY="161.0" prefHeight="49.0" prefWidth="142.0" />
 
-                                                                <!-- ComboBox for 'id' selection -->
                                                                 <ComboBox fx:id="helyszinIdComboBox" layoutX="14.0" layoutY="84.0" prefWidth="150.0" />
 
-                                                                <!-- Labels -->
                                                                 <Label layoutX="14.0" layoutY="60.0" text="id alapjan kivalasztas" />
                                                                 <Label layoutX="14.0" layoutY="137.0" text="nev" />
                                                                 <Label layoutX="236.0" layoutY="137.0" text="megyeid" />
 
-                                                                <!-- Update Button -->
                                                                 <Button fx:id="helyszinModositasButton" layoutX="33.0" layoutY="404.0" mnemonicParsing="false" prefHeight="142.0" prefWidth="605.0" text="Módosítás" onAction="#updateHelyszin" />
                                                             </children>
                                                         </AnchorPane>
@@ -230,22 +202,18 @@
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
-                                                                <!-- ComboBox for selecting Megye by id -->
+
                                                                 <ComboBox fx:id="megyeIdComboBox" layoutX="14.0" layoutY="117.0" prefWidth="150.0" />
-                                                                <!-- Labels for user interface -->
+
                                                                 <Label layoutX="14.0" layoutY="89.0" text="id alapjan kivalasztas" />
 
-                                                                <!-- TextArea for Megye's Name -->
                                                                 <TextArea fx:id="megyeNevTextArea" layoutX="14.0" layoutY="202.0" prefHeight="200.0" prefWidth="200.0" />
 
-                                                                <!-- TextArea for Megye's Region -->
                                                                 <TextArea fx:id="megyeRegioTextArea" layoutX="247.0" layoutY="202.0" prefHeight="200.0" prefWidth="200.0" />
 
-                                                                <!-- Labels for Name and Region -->
                                                                 <Label layoutX="14.0" layoutY="174.0" text="nev" />
                                                                 <Label layoutX="247.0" layoutY="174.0" text="regio" />
 
-                                                                <!-- Button for update action -->
                                                                 <Button fx:id="megyeModositasButton" layoutX="14.0" layoutY="437.0" mnemonicParsing="false" prefHeight="184.0" prefWidth="429.0" text="modositas" />
                                                             </children>
                                                         </AnchorPane>
@@ -269,41 +237,45 @@
                                         </Label>
                                         <TabPane prefHeight="768.0" prefWidth="1276.0" tabClosingPolicy="UNAVAILABLE">
                                             <tabs>
+
                                                 <Tab text="Torony">
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="357.0" prefWidth="533.0">
                                                             <children>
                                                                 <Label layoutX="31.0" layoutY="163.0" text="id alapjan torles" />
-                                                                <ComboBox layoutY="180.0" prefWidth="150.0" />
-                                                                <Button layoutX="49.0" layoutY="233.0" mnemonicParsing="false" text="torles" />
+                                                                <ComboBox fx:id="toronyDeleteIdComboBox" layoutY="180.0" prefWidth="150.0" />
+                                                                <Button fx:id="toronyDeleteButton" layoutX="49.0" layoutY="233.0" mnemonicParsing="false" text="torles" onAction="#handleToronyDelete"/>
                                                             </children>
                                                         </AnchorPane>
                                                     </content>
                                                 </Tab>
+
                                                 <Tab text="Helyszín">
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
                                                                 <Label layoutX="26.0" layoutY="118.0" text="id alapjan torles" />
-                                                                <ComboBox layoutX="14.0" layoutY="147.0" prefWidth="150.0" />
-                                                                <Button layoutX="43.0" layoutY="193.0" mnemonicParsing="false" text="torles" />
+                                                                <ComboBox fx:id="helyszinDeleteIdComboBox" layoutX="14.0" layoutY="147.0" prefWidth="150.0" />
+                                                                <Button fx:id="helyszinDeleteButton" layoutX="43.0" layoutY="193.0" mnemonicParsing="false" text="torles" onAction="#handleHelyszinDelete"/>
                                                             </children>
                                                         </AnchorPane>
                                                     </content>
                                                 </Tab>
+
                                                 <Tab text="Megye">
                                                     <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                             <children>
                                                                 <Label layoutX="76.0" layoutY="181.0" text="id alapjan torles" />
-                                                                <ComboBox layoutX="43.0" layoutY="212.0" prefWidth="150.0" />
-                                                                <Button layoutX="93.0" layoutY="257.0" mnemonicParsing="false" text="torles" />
+                                                                <ComboBox fx:id="megyeDeleteIdComboBox" layoutX="43.0" layoutY="212.0" prefWidth="150.0" />
+                                                                <Button fx:id="megyeDeleteButton" layoutX="93.0" layoutY="257.0" mnemonicParsing="false" text="torles" onAction="#handleMegyeDelete"/>
                                                             </children>
                                                         </AnchorPane>
                                                     </content>
                                                 </Tab>
                                             </tabs>
                                         </TabPane>
+
                                     </children>
                                 </AnchorPane>
                             </content>

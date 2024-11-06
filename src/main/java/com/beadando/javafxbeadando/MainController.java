@@ -30,16 +30,16 @@ public class MainController {
     private TextArea textArea;
 
     @FXML
-    private ComboBox<Integer> comboBox; // Assuming you want to select integer values
+    private ComboBox<Integer> comboBox;
 
     @FXML
-    private RadioButton radioButton; // For filtering darab > 2
+    private RadioButton radioButton;
 
     @FXML
-    private CheckBox checkBox; // For filtering darab < 5
+    private CheckBox checkBox;
 
     @FXML
-    private Button listazasButton; // The button to trigger the listing action
+    private Button listazasButton;
     @FXML
     private Spinner<Integer> darabSpinner = new Spinner<Integer>();
 
@@ -52,20 +52,20 @@ public class MainController {
     @FXML
     private Spinner<Integer> helyszinidSpinner = new Spinner<Integer>();
     @FXML
-    private Button rekordHozzaadButton = new Button();  // Button for adding a new record
+    private Button rekordHozzaadButton = new Button();
     @FXML
-    private TextArea helyszinNameTextArea = new TextArea();  // TextArea for entering the name of the location
+    private TextArea helyszinNameTextArea = new TextArea();
     @FXML
-    private Spinner<Integer> megyeidSpinner = new Spinner<Integer>();  // Spinner for selecting the County ID (MegyeID)
+    private Spinner<Integer> megyeidSpinner = new Spinner<Integer>();
 
     @FXML
-    private Button megyeAddButton = new Button();  // The button to trigger the adding action
+    private Button megyeAddButton = new Button();
 
     @FXML
-    private TextArea nevTextArea = new TextArea();   // TextArea for "Név"
+    private TextArea nevTextArea = new TextArea();
 
     @FXML
-    private TextArea regioTextArea = new TextArea(); // TextArea for "Régió"
+    private TextArea regioTextArea = new TextArea();
     @FXML
     private Spinner<Integer> updateToronyDarabBemenet =new Spinner<Integer>();
     @FXML
@@ -79,39 +79,50 @@ public class MainController {
     @FXML
     private ComboBox<Integer> updateToronyIdComboBox = new ComboBox<Integer>();
     @FXML
-    private TextArea helyszinNevTextArea = new TextArea(); // For the name of the Helyszin
+    private TextArea helyszinNevTextArea = new TextArea();
     @FXML
-    private Spinner<Integer> helyszinMegyeidSpinner=new Spinner<Integer>(); // For the MegyeID
+    private Spinner<Integer> helyszinMegyeidSpinner=new Spinner<Integer>();
     @FXML
-    private ComboBox<Integer> helyszinIdComboBox=new ComboBox<Integer>(); // For selecting the ID
+    private ComboBox<Integer> helyszinIdComboBox=new ComboBox<Integer>();
     @FXML
-    private Button helyszinModositasButton=new Button(); // The button to trigger the update
+    private Button helyszinModositasButton=new Button();
     @FXML
-    private ComboBox<Integer> megyeIdComboBox = new ComboBox<Integer>(); // ComboBox for selecting Megye by id
+    private ComboBox<Integer> megyeIdComboBox = new ComboBox<Integer>();
 
     @FXML
-    private TextArea megyeNevTextArea=new TextArea(); // TextArea for Megye name
+    private TextArea megyeNevTextArea=new TextArea();
 
     @FXML
-    private TextArea megyeRegioTextArea=new TextArea(); // TextArea for Megye region
+    private TextArea megyeRegioTextArea=new TextArea();
 
     @FXML
-    private Button megyeModositasButton=new Button(); // Button for updating Megye
+    private Button megyeModositasButton=new Button();
 
+    @FXML
+    private ComboBox<Integer> toronyDeleteIdComboBox = new ComboBox<Integer>();
+    @FXML
+    private Button toronyDeleteButton = new Button();
 
+    @FXML
+    private ComboBox<Integer> helyszinDeleteIdComboBox = new ComboBox<Integer>();
+    @FXML
+    private Button helyszinDeleteButton= new Button();
 
+    @FXML
+    private ComboBox<Integer> megyeDeleteIdComboBox = new ComboBox<Integer>();
+    @FXML
+    private Button megyeDeleteButton= new Button();
 
     @FXML
     private void updateTorony() {
         Integer selectedId = updateToronyIdComboBox.getValue();
         if (selectedId != null) {
-            // Get the updated values from the spinners
+
             int darab = updateToronyDarabBemenet.getValue();
             int teljesitmeny = updateToronyTeljesitmenyBemenet.getValue();
             int kezdev = updateToronyKezdevBemenet.getValue();
             int helyszinid = updateToronyHelyszinidBemenet.getValue();
 
-            // Call the updateTorony method from your DatabaseManager
             dbManager.updateTorony(selectedId, darab, teljesitmeny, kezdev, helyszinid);
         } else {
             System.out.println("Please select a Torony ID to update.");
@@ -123,12 +134,12 @@ public class MainController {
     private int teljesitmenyValue;
     private int kezdevValue;
     private int megyeidValue;
-    // Declare DatabaseManager as an instance variable
+
     private final DatabaseManager dbManager = new DatabaseManager();
 
     @FXML
     public void initialize() {
-        // Set up the spinners with ranges and default values
+
         darabSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1));
         teljesitmenySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(200, 3000, 200));
         kezdevSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2000, 2024, 2000));
@@ -136,71 +147,127 @@ public class MainController {
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, 1);
         megyeidSpinner.setValueFactory(valueFactory);
         rekordHozzaadButton.setOnAction(event -> addHelyszinRecord());
-        // Initialize the "Darab" Spinner
-        SpinnerValueFactory<Integer> darabValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1); // min, max, initial value
+
+        SpinnerValueFactory<Integer> darabValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1);
         updateToronyDarabBemenet.setValueFactory(darabValueFactory);
 
-        // Initialize the "Teljesítmény" Spinner
-        SpinnerValueFactory<Integer> teljesitmenyValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 3000, 100); // min, max, initial value
+        SpinnerValueFactory<Integer> teljesitmenyValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 3000, 100);
         updateToronyTeljesitmenyBemenet.setValueFactory(teljesitmenyValueFactory);
 
-        // Initialize the "Kezdés Éve" Spinner
-        SpinnerValueFactory<Integer> kezdevValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(2000, 2025, 2023); // min, max, initial value
+        SpinnerValueFactory<Integer> kezdevValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(2000, 2025, 2023);
         updateToronyKezdevBemenet.setValueFactory(kezdevValueFactory);
 
-        // Initialize the "Helyszín ID" Spinner (you might want to populate it dynamically later)
-        SpinnerValueFactory<Integer> helyszinidValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1); // Placeholder values
+        SpinnerValueFactory<Integer> helyszinidValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1);
         updateToronyHelyszinidBemenet.setValueFactory(helyszinidValueFactory);
 
-        // Initialize the "ID" Spinner for editing an existing record
-        SpinnerValueFactory<Integer> idValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1); // Placeholder values
+        SpinnerValueFactory<Integer> idValueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1);
         updateToronyIdBemenet.setValueFactory(idValueFactory);
 
-        List<Integer> toronyIds = dbManager.getAllToronyIds(); // This is a method you'd create to get all Torony IDs
+        List<Integer> toronyIds = dbManager.getAllToronyIds();
         ObservableList<Integer> toronyIdList = FXCollections.observableArrayList(toronyIds);
         updateToronyIdComboBox.setItems(toronyIdList);
-        List<Helyszin> helyszinList = dbManager.getAllHelyszin();  // You may need to create this method
+        List<Helyszin> helyszinList = dbManager.getAllHelyszin();
 
         helyszinMegyeidSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 1));
 
         ObservableList<Integer> ids = FXCollections.observableArrayList();
         for (Helyszin helyszin : helyszinList) {
-            ids.add(helyszin.getId()); // Populate ComboBox with Helyszin IDs
+            ids.add(helyszin.getId());
         }
-        helyszinIdComboBox.setItems(ids);  // Set the ComboBox's items
+        helyszinIdComboBox.setItems(ids);
 
-        // Populate ComboBox with Megye IDs (can be populated using a method like getAllMegyeIds())
-        List<Integer> megyeIds = dbManager.getAllMegyeIds();  // Assuming you have this method in your DatabaseManager
+        List<Integer> megyeIds = dbManager.getAllMegyeIds();
         megyeIdComboBox.getItems().addAll(megyeIds);
 
-        // Add an Action Listener for the "Módosítás" button
         megyeModositasButton.setOnAction(event -> updateMegye());
 
+        populateToronyDeleteComboBox();
+        populateHelyszinDeleteComboBox();
+        populateMegyeDeleteComboBox();
+
+    }
+    private void populateToronyDeleteComboBox() {
+        List<Integer> toronyIds = dbManager.getAllToronyIds();
+        toronyDeleteIdComboBox.getItems().addAll(toronyIds);
+    }
+
+    private void populateHelyszinDeleteComboBox() {
+        List<Integer> helyszinIds = dbManager.getAllHelyszinIds();
+        helyszinDeleteIdComboBox.getItems().addAll(helyszinIds);
+    }
+
+    private void populateMegyeDeleteComboBox() {
+        List<Integer> megyeIds = dbManager.getAllMegyeIds();
+        megyeDeleteIdComboBox.getItems().addAll(megyeIds);
     }
     @FXML
-    private void updateHelyszin() {
-        System.out.println("Button clicked!");  // This will help you verify if the method is being called
-        int id = helyszinIdComboBox.getValue(); // Get selected Helyszin ID
-        String nev = helyszinNevTextArea.getText(); // Get the name from TextArea
-        int megyeid = helyszinMegyeidSpinner.getValue(); // Get MegyeID from Spinner
+    public void handleToronyDelete() {
+        Integer selectedId = toronyDeleteIdComboBox.getValue();
+        if (selectedId != null) {
+            dbManager.deleteTorony(selectedId);
+            populateToronyDeleteComboBox();
+        } else {
+            showAlert("Please select a Torony ID to delete.");
+        }
+        toronyDeleteIdComboBox.setValue(toronyDeleteIdComboBox.getItems().get(0));
 
-        // Call DatabaseManager method to update the Helyszin
+    }
+
+    @FXML
+    public void handleHelyszinDelete() {
+        Integer selectedId = helyszinDeleteIdComboBox.getValue();
+        if (selectedId != null) {
+            dbManager.deleteHelyszin(selectedId);
+            populateHelyszinDeleteComboBox();
+        } else {
+            showAlert("Please select a Helyszin ID to delete.");
+        }
+        helyszinDeleteIdComboBox.setValue(helyszinDeleteIdComboBox.getItems().get(0));
+
+    }
+
+    @FXML
+    public void handleMegyeDelete() {
+        Integer selectedId = megyeDeleteIdComboBox.getValue();
+        if (selectedId != null) {
+            dbManager.deleteMegye(selectedId);
+            populateMegyeDeleteComboBox();
+        } else {
+            showAlert("Please select a Megye ID to delete.");
+        }
+        megyeDeleteIdComboBox.setValue(megyeDeleteIdComboBox.getItems().get(0));
+
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Warning");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void updateHelyszin() {
+        System.out.println("Button clicked!");
+        int id = helyszinIdComboBox.getValue();
+        String nev = helyszinNevTextArea.getText();
+        int megyeid = helyszinMegyeidSpinner.getValue();
+
         DatabaseManager dbManager = new DatabaseManager();
-        dbManager.updateHelyszin(id, nev, megyeid); // Update Helyszin in database
+        dbManager.updateHelyszin(id, nev, megyeid);
     }
     @FXML
     public void handleAddMegyeButtonClick(ActionEvent event) {
-        // Get the values from the TextArea fields
+
         String nev = nevTextArea.getText().trim();
         String regio = regioTextArea.getText().trim();
 
-        // Check that the input fields are not empty
         if (!nev.isEmpty() && !regio.isEmpty()) {
-            // Call the addMegye method in your DatabaseManager class
-            // Assuming that the "id" is auto-incremented
-            dbManager.addMegye(nev, regio);  // Make sure this method accepts these parameters
+
+            dbManager.addMegye(nev, regio);
         } else {
-            // Handle error (e.g., show a message)
+
             System.out.println("Please fill in both fields.");
         }
     }
@@ -210,7 +277,7 @@ public class MainController {
         String regio = megyeRegioTextArea.getText();
 
         if (selectedId != null && !nev.isEmpty() && !regio.isEmpty()) {
-            // Call your updateMegye method in DatabaseManager
+
             dbManager.updateMegye(selectedId, nev, regio);
         } else {
             System.out.println("Please fill in all fields and select a valid Megye ID.");
@@ -218,28 +285,24 @@ public class MainController {
     }
     @FXML
     private void handleAddButtonTorony() {
-        // Retrieve the values from each spinner and store them
+
         darabValue = darabSpinner.getValue();
         teljesitmenyValue = teljesitmenySpinner.getValue();
         kezdevValue = kezdevSpinner.getValue();
         megyeidValue = helyszinidSpinner.getValue();
 
-        // Example output to show that values are stored
         System.out.println("Darab: " + darabValue);
         System.out.println("Teljesítmény: " + teljesitmenyValue);
         System.out.println("Kezdév: " + kezdevValue);
         System.out.println("Megyeid: " + megyeidValue);
 
-        // Additional processing can be done here
         dbManager.addTorony( darabValue, teljesitmenyValue, kezdevValue, megyeidValue);
     }
-
 
     @FXML
     private void handleOpenDatabaseMenu(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("DatabaseView.fxml"));
-
 
             Parent root = loader.load();
             Scene scene = new Scene(root);
@@ -251,29 +314,26 @@ public class MainController {
         }
     }
     private void addHelyszinRecord() {
-        String helyszinNev = helyszinNameTextArea.getText();  // Get the location name from the TextArea
-        int megyeid = megyeidSpinner.getValue();  // Get the selected Megye ID from the Spinner
+        String helyszinNev = helyszinNameTextArea.getText();
+        int megyeid = megyeidSpinner.getValue();
 
-        // Make sure that name is not empty
         if (helyszinNev.isEmpty()) {
             System.out.println("Location name cannot be empty!");
             return;
         }
 
-        // Call the DatabaseManager to insert the new location record
         dbManager.addHelyszin(helyszinNev, megyeid);
     }
     @FXML
     private void loadToronyData() {
-        // Clear any existing columns or data in the table
+
         teljesTableView.getColumns().clear();
         teljesTableView.getItems().clear();
 
-        // Fetch data from the database
         List<Torony> toronyData = dbManager.getAllTorony();
 
         if (!toronyData.isEmpty()) {
-            // Define the columns for the Torony model
+
             TableColumn<Torony, Integer> idColumn = new TableColumn<>("ID");
             idColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getId()));
 
@@ -289,25 +349,22 @@ public class MainController {
             TableColumn<Torony, Integer> helyszinidColumn = new TableColumn<>("Helyszin ID");
             helyszinidColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getHelyszinid()));
 
-            // Add the columns to the TableView
             teljesTableView.getColumns().addAll(idColumn, darabColumn, teljesitmenyColumn, kezdevColumn, helyszinidColumn);
 
-            // Set the data in the TableView
             ObservableList<Torony> tableData = FXCollections.observableArrayList(toronyData);
             teljesTableView.setItems(tableData);
         }
     }
     @FXML
     private void loadMegyeData() {
-        // Clear any existing columns or data in the table
+
         teljesTableView.getColumns().clear();
         teljesTableView.getItems().clear();
 
-        // Fetch data for "Megye" from the database
-        List<Megye> megyeData = dbManager.getAllMegye(); // Assuming you have a method in dbManager for Megye
+        List<Megye> megyeData = dbManager.getAllMegye();
 
         if (!megyeData.isEmpty()) {
-            // Define the columns for the Megye model
+
             TableColumn<Megye, Integer> idColumn = new TableColumn<>("ID");
             idColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getId()));
 
@@ -317,55 +374,49 @@ public class MainController {
             TableColumn<Megye, String> regioColumn = new TableColumn<>("Régió");
             regioColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getName()));
 
-            // Add the columns to the TableView
             teljesTableView.getColumns().addAll(idColumn, nameColumn,regioColumn);
 
-            // Set the data in the TableView
             ObservableList<Megye> tableData = FXCollections.observableArrayList(megyeData);
             teljesTableView.setItems(tableData);
         } else {
-            showAlert("No Data", "No megye data available."); // Inform the user if no data is found
+            showAlert("No Data", "No megye data available.");
         }
     }
 
     @FXML
     private void loadHelyszinData() {
-        // Clear any existing columns or data in the table
+
         teljesTableView.getColumns().clear();
         teljesTableView.getItems().clear();
 
-        // Fetch data for "Helyszin" from the database
-        List<Helyszin> helyszinData = dbManager.getAllHelyszin(); // Ensure this method is implemented in dbManager
+        List<Helyszin> helyszinData = dbManager.getAllHelyszin();
 
         if (!helyszinData.isEmpty()) {
-            // Define the columns for the Helyszin model
+
             TableColumn<Helyszin, Integer> idColumn = new TableColumn<>("ID");
             idColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getId()));
 
             TableColumn<Helyszin, String> locationNameColumn = new TableColumn<>("Helyszín Név");
-            locationNameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getName())); // Use correct getter method
+            locationNameColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getName()));
 
-            TableColumn<Helyszin, Integer> megyeIdColumn = new TableColumn<>("Megye ID"); // New column for megyeId
-            megyeIdColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getMegyeId())); // Use correct getter method for megyeId
+            TableColumn<Helyszin, Integer> megyeIdColumn = new TableColumn<>("Megye ID");
+            megyeIdColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getMegyeId()));
 
-            // Add the columns to the TableView
-            teljesTableView.getColumns().addAll(idColumn, locationNameColumn, megyeIdColumn); // Add megyeIdColumn here
+            teljesTableView.getColumns().addAll(idColumn, locationNameColumn, megyeIdColumn);
 
-            // Set the data in the TableView
             ObservableList<Helyszin> tableData = FXCollections.observableArrayList(helyszinData);
             teljesTableView.setItems(tableData);
         } else {
-            showAlert("No Data", "No helyszin data available."); // Inform the user if no data is found
+            showAlert("No Data", "No helyszin data available.");
         }
     }
 
     @FXML
     private void handleListazasAction() {
-        // Clear existing columns or data in the table
+
         szuroslista.getColumns().clear();
         szuroslista.getItems().clear();
 
-        // Retrieve filter criteria
         String megyeNev = textArea.getText().trim();
         Integer teljesitmeny = (Integer) comboBox.getValue();
         boolean darabGreaterThan2 = radioButton.isSelected();
@@ -391,10 +442,9 @@ public class MainController {
         if (darabLessThan5) {
             sqlQuery.append(" AND darab < 5");
         }
-        // Execute the query and populate TableView
+
         List<String> toronyData = dbManager.executeCustomQuery(sqlQuery.toString());
 
-        // Define columns for each piece of data you want to display
         TableColumn<String, String> toronyIdColumn = new TableColumn<>("Torony ID");
         toronyIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(getValueOrDefault(cellData.getValue(), "Torony ID")));
 
@@ -422,34 +472,23 @@ public class MainController {
         TableColumn<String, String> regioColumn = new TableColumn<>("Régió");
         regioColumn.setCellValueFactory(cellData -> new SimpleStringProperty(getValueOrDefault(cellData.getValue(), "Régió")));
 
-        // Add all columns to the TableView
         szuroslista.getColumns().addAll(toronyIdColumn, darabColumn, teljesitmenyColumn, kezdevColumn, helyszinIdColumn, helyszinNevColumn, megyeIdColumn, megyeNevColumn, regioColumn);
 
-        // Populate the TableView with data
         ObservableList<String> tableData = FXCollections.observableArrayList(toronyData);
         szuroslista.setItems(tableData);
 
         System.out.println("TableView item count: " + szuroslista.getItems().size());
     }
 
-    // Helper method to safely get a value from the string
     private String getValueOrDefault(String dataString, String key) {
         String pattern = key + ":\\s*(.*?)(,|$)";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(dataString);
         if (m.find()) {
-            return m.group(1).trim(); // Return the matched value, trimmed of whitespace
+            return m.group(1).trim();
         }
-        return "N/A"; // Return a default value if not found
+        return "N/A";
     }
-
-
-
-
-
-
-
-
 
     @FXML
     private void handleOpenSoapClientMenu() {
