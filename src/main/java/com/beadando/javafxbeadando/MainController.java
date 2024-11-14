@@ -23,6 +23,10 @@ public class MainController {
 
     @FXML
     private TableView teljesTableView;
+    @FXML
+    private Label mokaslabel2 = new Label();
+    @FXML
+    private Label mokaslabel1 = new Label();
 
     @FXML
     private TableView szuroslista;
@@ -139,6 +143,10 @@ public class MainController {
 
     @FXML
     public void initialize() {
+        Szal szalletezo = new Szal(mokaslabel1);
+        szalletezo.start();
+        Szal2 szalletezomasik = new Szal2(mokaslabel2);
+        szalletezomasik.start();
 
         darabSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1));
         teljesitmenySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(200, 3000, 200));

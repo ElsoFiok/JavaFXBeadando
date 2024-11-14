@@ -9,4 +9,7 @@
       alignment="CENTER">
     <Label text="Welcome to the JavaFX Application!" />
     <Button text="Open Database Menu" onAction="#handleOpenDatabaseMenu"/>
+    <Label text="Párhuzamos program bemutatás:" />
+    <Label fx:id="mokaslabel1" text="Lesz tartalom"/>
+    <Label fx:id="mokaslabel2" text="itt is lesz valami."/>
 </VBox>
