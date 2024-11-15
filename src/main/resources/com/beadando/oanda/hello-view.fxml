@@ -1,16 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.beadando.oanda.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<?import javafx.scene.control.Label?>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
-</VBox>
+<?import javafx.scene.layout.VBox?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.beadando.oanda.HelloController">
+    <!-- TabPane placed inside the AnchorPane and anchored to top-left without spacing -->
+    <TabPane fx:id="mainTabPane" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" prefWidth="800" prefHeight="500">
+        <Tab text="Account Info">
+            <AnchorPane>
+                <!-- TableView anchored to all sides so it stretches with window resizing -->
+                <TableView fx:id="accountSummaryTable" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+                    <TableColumn fx:id="idColumn" text="Account ID" prefWidth="150"/>
+                    <TableColumn fx:id="aliasColumn" text="Alias" prefWidth="100"/>
+                    <TableColumn fx:id="currencyColumn" text="Currency" prefWidth="100"/>
+                    <TableColumn fx:id="balanceColumn" text="Balance" prefWidth="100"/>
+                    <TableColumn fx:id="plColumn" text="PL" prefWidth="100"/>
+                    <TableColumn fx:id="marginRateColumn" text="Margin Rate" prefWidth="100"/>
+                    <TableColumn fx:id="marginAvailableColumn" text="Margin Available" prefWidth="100"/>
+                    <TableColumn fx:id="withdrawalLimitColumn" text="Withdrawal Limit" prefWidth="100"/>
+                </TableView>
+            </AnchorPane>
+        </Tab>
+        <Tab text="Aktuális árak">
+            <VBox>
+                <Label text="Select a currency pair"/>
+                <!-- Dropdown for currency pair (ComboBox)-->
+                <Button text="Get Current Price"/>
+            </VBox>
+        </Tab>
+        <Tab text="Historikus árak">
+            <VBox>
+                <Label text="Select currency pair, start and end date"/>
+                <Button text="Get Historical Prices"/>
+            </VBox>
+        </Tab>
+        <Tab text="Pozíció nyitás">
+            <VBox>
+                <Label text="Select currency pair, amount and direction"/>
+                <Button text="Open Position"/>
+            </VBox>
+        </Tab>
+        <Tab text="Pozíció zárás">
+            <VBox>
+                <Label text="Enter Position ID to Close"/>
+                <Button text="Close Position"/>
+            </VBox>
+        </Tab>
+        <Tab text="Nyitott pozíciók">
+            <VBox>
+                <Label text="Current open positions"/>
+                <Button text="Show Open Positions"/>
+            </VBox>
+        </Tab>
+    </TabPane>
+</AnchorPane>
