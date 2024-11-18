@@ -64,7 +64,22 @@ public class HelloController {
     private DatePicker startDatePicker;
     @FXML
     private DatePicker endDatePicker;
-    ObservableList<String[]> data = FXCollections.observableArrayList();
+
+    @FXML
+    private ComboBox<String> currencyPairComboBox3; // Updated ID for Currency Pair ComboBox
+    @FXML
+    private ComboBox<Integer> amountComboBox; // Amount ComboBox
+    @FXML
+    private ComboBox<String> directionComboBox; // Direction ComboBox
+
+
+
+
+
+
+
+
+
 
     @FXML
     protected void initialize() {
@@ -74,6 +89,8 @@ public class HelloController {
         dateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[0]));
         priceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[1]));
         currencyPairComboBox.setItems(FXCollections.observableArrayList("EUR/USD", "USD/JPY", "GBP/USD", "AUD/USD", "USD/CAD"));
+        currencyPairComboBox3.setItems(FXCollections.observableArrayList("EUR/USD", "USD/JPY", "GBP/USD", "AUD/USD", "USD/CAD"));
+        amountComboBox.setItems(FXCollections.observableArrayList(1, 10, 100, 1000));
 
         try {
             Context ctx = new Context("https://api-fxpractice.oanda.com", Config.TOKEN);
@@ -115,20 +132,40 @@ public class HelloController {
             }
             data.add(row);
             accountSummaryTable.setItems(data);
-            idColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue()[0]));
-            aliasColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue()[1]));
-            currencyColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue()[2]));
-            balanceColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue()[3]));
-            plColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue()[4]));
-            marginRateColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue()[5]));
-            marginAvailableColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue()[6]));
-            withdrawalLimitColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue()[7]));
-            accountSummaryTable.getColumns().addAll(idColumn, aliasColumn, currencyColumn, balanceColumn,
-                    plColumn, marginRateColumn, marginAvailableColumn, withdrawalLimitColumn);
+            idColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[0]));
+            aliasColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[1]));
+            currencyColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[2]));
+            balanceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[3]));
+            plColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[4]));
+            marginRateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[5]));
+            marginAvailableColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[6]));
+            withdrawalLimitColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[7]));
+            accountSummaryTable.getColumns().addAll(idColumn, aliasColumn, currencyColumn, balanceColumn, plColumn, marginRateColumn, marginAvailableColumn, withdrawalLimitColumn);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void onOpenPositionButtonClick() {
+        String currencyPair = currencyPairComboBox3.getValue();
+        Integer amount = amountComboBox.getValue();
+        String direction = directionComboBox.getValue();
+        if (currencyPair == null || amount == null || direction == null) {
+            System.out.println("Minden mező kitöltése szükséges!");
+            return;
+        }
+
+
+        Context ctx = new ContextBuilder(Config.URL)
+                .setToken(Config.TOKEN)
+                .setApplication("HistorikusAdatok")
+                .build();
+
+        OpenDisplayClosePosition.Nyitás(ctx, Config.ACCOUNTID, currencyPair, amount, direction);
+
+    }
+
     public void openGraphWindow(String currencyPair, LocalDate startDate, LocalDate endDate) {
         Stage graphStage = new Stage();
         graphStage.setTitle("Grafikon");
@@ -176,14 +213,12 @@ public class HelloController {
         }
         historicalPricesTable.setItems(fetchHistoricalPrices(currencyPair, startDate, endDate));
     }
-
     private ObservableList<String[]> fetchHistoricalPrices(String currencyPair, LocalDate  startDate, LocalDate  endDate) {
         String instrumentName = currencyPair.replace("/", "_");
         Context ctx = new ContextBuilder(Config.URL)
                 .setToken(Config.TOKEN)
                 .setApplication("HistorikusAdatok")
                 .build();
-
         try {
             InstrumentCandlesRequest request = new InstrumentCandlesRequest(new InstrumentName(instrumentName));
             request.setGranularity(CandlestickGranularity.H1);

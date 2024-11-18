@@ -8,11 +8,12 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.DatePicker?>
+<?import java.lang.String?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.beadando.oanda.HelloController">
     <TabPane fx:id="mainTabPane" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" prefWidth="800" prefHeight="500">
         <Tab text="Account Info">
@@ -63,10 +64,21 @@
 
         <Tab text="Pozíció nyitás">
             <VBox>
-                <Label text="Select currency pair, amount and direction"/>
-                <Button text="Open Position"/>
+                <Label text="Válassz devizapárt, mennyiséget és irányt"/>
+                <ComboBox fx:id="currencyPairComboBox3" promptText="Devizapár" />
+                <ComboBox fx:id="amountComboBox" promptText="Mennyiség" />
+                <ComboBox fx:id="directionComboBox" promptText="Irány" >
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Vétel"/>
+                            <String fx:value="Eladás"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <Button text="Pozíció megnyitása" onAction="#onOpenPositionButtonClick" />
             </VBox>
         </Tab>
+
         <Tab text="Pozíció zárás">
             <VBox>
                 <Label text="Enter Position ID to Close"/>
