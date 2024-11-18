@@ -1,6 +1,11 @@
 package com.beadando.oanda;
 
+import com.oanda.v20.ContextBuilder;
+import com.oanda.v20.pricing.ClientPrice;
+import com.oanda.v20.pricing.PricingGetRequest;
+import com.oanda.v20.pricing.PricingGetResponse;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -10,14 +15,14 @@ import javafx.scene.control.Label;
 import com.oanda.v20.Context;
 import com.oanda.v20.account.AccountID;
 import com.oanda.v20.account.AccountSummary;
+import java.util.Collections;
+import java.util.List;
 
 public class HelloController {
     @FXML
-    private StackPane contentStack;  // StackPane to switch content views
-
+    private StackPane contentStack;
     @FXML
-    private TableView<String[]> accountSummaryTable;  // Existing TableView for account summary
-
+    private TableView<String[]> accountSummaryTable;
     @FXML
     private TableColumn<String[], String> idColumn;
     @FXML
@@ -34,13 +39,16 @@ public class HelloController {
     private TableColumn<String[], String> marginAvailableColumn;
     @FXML
     private TableColumn<String[], String> withdrawalLimitColumn;
-
-    // Method to initialize the table with account data
+    @FXML
+    private ComboBox<String> currencyPairComboBox;
+    @FXML
+    private Label currentPriceLabel;
     @FXML
     protected void initialize() {
+        currencyPairComboBox.setItems(FXCollections.observableArrayList(
+                "EUR/USD", "USD/JPY", "GBP/USD", "AUD/USD", "USD/CAD"
+        ));
         try {
-
-            // Set up the context and fetch account summary
             Context ctx = new Context("https://api-fxpractice.oanda.com", Config.TOKEN);
             AccountSummary summary = ctx.account.summary(new AccountID(Config.ACCOUNTID)).getAccount();
             String summaryString = summary.toString();
@@ -94,68 +102,76 @@ public class HelloController {
             e.printStackTrace();
         }
     }
-
-    // Method to show the account information
     @FXML
     private void showAccountInfo() {
-        // Clear current content
         contentStack.getChildren().clear();
-
-        // Add the account summary table to the stack (your default view)
         contentStack.getChildren().add(accountSummaryTable);
     }
+    @FXML
+    private void handleGetPrice() {
+        String selectedPair = currencyPairComboBox.getValue();
+        if (selectedPair == null) {
+            currentPriceLabel.setText("Kérjük válasszon devizapárt!");
+            return;
+        }
 
-    // Placeholder method for "Aktuális árak"
+        try {
+            String currentPrice = fetchCurrentPrice(selectedPair);
+            currentPriceLabel.setText("Jelenlegi ár: " + currentPrice);
+        } catch (Exception e) {
+            currentPriceLabel.setText("Valami baj van.");
+            e.printStackTrace();
+        }
+    }
+    private String fetchCurrentPrice(String currencyPair) {
+        try {
+            Context ctx = new ContextBuilder(Config.URL)
+                    .setToken(Config.TOKEN)
+                    .setApplication("PricePolling")
+                    .build();
+            String instrument = currencyPair.replace("/", "_");
+            AccountID accountId = Config.ACCOUNTID;
+            List<String> instruments = Collections.singletonList(instrument);
+            PricingGetRequest request = new PricingGetRequest(accountId, instruments);
+            PricingGetResponse resp = ctx.pricing.get(request);
+            for (ClientPrice price : resp.getPrices()) {
+                if (price.getInstrument().equals(instrument)) {
+                    return price.getBids().get(0).getPrice().toString();
+                }
+            }
+            return "Nem elérhető a devizapár ára " + currencyPair;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Valami baj történt: " + e.getMessage();
+        }
+    }
     @FXML
     private void showCurrentPrice() {
-        // Clear current content
         contentStack.getChildren().clear();
-
-        // Add a label or a new component for the current price section
-        Label currentPriceLabel = new Label("Current Price Section (Placeholder)");
+        Label currentPriceLabel = new Label("Jelenlegi ár részleg: (Placeholder)");
         contentStack.getChildren().add(currentPriceLabel);
     }
-
-    // Placeholder method for "Historikus árak"
     @FXML
     private void showHistoricalPrices() {
-        // Clear current content
         contentStack.getChildren().clear();
-
-        // Add a label or a new component for the historical prices section
         Label historicalPriceLabel = new Label("Historical Prices Section (Placeholder)");
         contentStack.getChildren().add(historicalPriceLabel);
     }
-
-    // Placeholder method for "Pozíció nyitás"
     @FXML
     private void showOpenPosition() {
-        // Clear current content
         contentStack.getChildren().clear();
-
-        // Add a label or a new component for the open position section
         Label openPositionLabel = new Label("Open Position Section (Placeholder)");
         contentStack.getChildren().add(openPositionLabel);
     }
-
-    // Placeholder method for "Pozíció zárás"
     @FXML
     private void showClosePosition() {
-        // Clear current content
         contentStack.getChildren().clear();
-
-        // Add a label or a new component for the close position section
         Label closePositionLabel = new Label("Close Position Section (Placeholder)");
         contentStack.getChildren().add(closePositionLabel);
     }
-
-    // Placeholder method for "Nyitott pozíciók"
     @FXML
     private void showOpenPositions() {
-        // Clear current content
         contentStack.getChildren().clear();
-
-        // Add a label or a new component for the open positions section
         Label openPositionsLabel = new Label("Open Positions Section (Placeholder)");
         contentStack.getChildren().add(openPositionsLabel);
     }

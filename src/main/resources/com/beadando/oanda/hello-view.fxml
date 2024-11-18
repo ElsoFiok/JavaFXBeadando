@@ -10,12 +10,11 @@
 <?import javafx.scene.control.Label?>
 
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ComboBox?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.beadando.oanda.HelloController">
-    <!-- TabPane placed inside the AnchorPane and anchored to top-left without spacing -->
     <TabPane fx:id="mainTabPane" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" prefWidth="800" prefHeight="500">
         <Tab text="Account Info">
             <AnchorPane>
-                <!-- TableView anchored to all sides so it stretches with window resizing -->
                 <TableView fx:id="accountSummaryTable" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
                     <TableColumn fx:id="idColumn" text="Account ID" prefWidth="150"/>
                     <TableColumn fx:id="aliasColumn" text="Alias" prefWidth="100"/>
@@ -29,10 +28,11 @@
             </AnchorPane>
         </Tab>
         <Tab text="Aktuális árak">
-            <VBox>
-                <Label text="Select a currency pair"/>
-                <!-- Dropdown for currency pair (ComboBox)-->
-                <Button text="Get Current Price"/>
+            <VBox spacing="10" alignment="CENTER">
+                <Label text="Válasszon devizapárt" />
+                <ComboBox fx:id="currencyPairComboBox" promptText="Válasszon devizapárt" />
+                <Label fx:id="currentPriceLabel" text="Jelenlegi ár:: " />
+                <Button text="Devizapár árának legérdezése" onAction="#handleGetPrice" />
             </VBox>
         </Tab>
         <Tab text="Historikus árak">
