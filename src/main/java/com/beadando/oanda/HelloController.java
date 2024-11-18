@@ -1,6 +1,8 @@
 package com.beadando.oanda;
 
 import com.oanda.v20.ContextBuilder;
+import com.oanda.v20.ExecuteException;
+import com.oanda.v20.RequestException;
 import com.oanda.v20.instrument.CandlestickGranularity;
 import com.oanda.v20.instrument.InstrumentCandlesRequest;
 import com.oanda.v20.pricing.ClientPrice;
@@ -27,6 +29,12 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import javafx.scene.chart.CategoryAxis;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import com.oanda.v20.trade.Trade;
+import com.oanda.v20.trade.TradeCloseRequest;
+import com.oanda.v20.trade.TradeSpecifier;
+
 public class HelloController {
     @FXML
     private StackPane contentStack;
@@ -53,6 +61,8 @@ public class HelloController {
     @FXML
     private Label currentPriceLabel;
     @FXML
+    private Label closeStatus;
+    @FXML
     private ComboBox<String> currencyPairComboBox2;
     @FXML
     private TableView<String[]> historicalPricesTable;
@@ -64,25 +74,42 @@ public class HelloController {
     private DatePicker startDatePicker;
     @FXML
     private DatePicker endDatePicker;
-
     @FXML
-    private ComboBox<String> currencyPairComboBox3; // Updated ID for Currency Pair ComboBox
+    private ComboBox<String> currencyPairComboBox3;
     @FXML
-    private ComboBox<Integer> amountComboBox; // Amount ComboBox
+    private ComboBox<Integer> amountComboBox;
     @FXML
-    private ComboBox<String> directionComboBox; // Direction ComboBox
-
-
-
-
-
-
-
-
-
-
+    private ComboBox<String> directionComboBox;
+    @FXML
+    private  TableView<String[]> positionsTable;
+    @FXML
+    private TableColumn<String[], String> positionsidColumn;
+    @FXML
+    private TableColumn<String[], String> positionsinstrumentColumn;
+    @FXML
+    private TableColumn<String[], String> positionsopenTimeColumn;
+    @FXML
+    private TableColumn<String[], String> positionscurrentUnitsColumn;
+    @FXML
+    private TableColumn<String[], String> positionspriceColumn;
+    @FXML
+    private TableColumn<String[], String> positionsunrealizedPLColumn;
+    @FXML
+    private TextField positionIdTextField;
     @FXML
     protected void initialize() {
+        positionsidColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[0]));
+        positionsinstrumentColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[1]));
+        positionsopenTimeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[2]));
+        positionscurrentUnitsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[3]));
+        positionspriceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[4]));
+        positionsunrealizedPLColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[5]));
+        positionsidColumn.prefWidthProperty().bind(positionsTable.widthProperty().multiply(0.1));
+        positionsinstrumentColumn.prefWidthProperty().bind(positionsTable.widthProperty().multiply(0.2));
+        positionsopenTimeColumn.prefWidthProperty().bind(positionsTable.widthProperty().multiply(0.2));
+        positionscurrentUnitsColumn.prefWidthProperty().bind(positionsTable.widthProperty().multiply(0.2));
+        positionspriceColumn.prefWidthProperty().bind(positionsTable.widthProperty().multiply(0.15));
+        positionsunrealizedPLColumn.prefWidthProperty().bind(positionsTable.widthProperty().multiply(0.15));
         dateColumn.prefWidthProperty().bind(historicalPricesTable.widthProperty().multiply(0.5));
         priceColumn.prefWidthProperty().bind(historicalPricesTable.widthProperty().multiply(0.5));
         currencyPairComboBox2.setItems(FXCollections.observableArrayList("EUR/USD", "USD/JPY", "GBP/USD", "AUD/USD", "USD/CAD"));
@@ -91,7 +118,6 @@ public class HelloController {
         currencyPairComboBox.setItems(FXCollections.observableArrayList("EUR/USD", "USD/JPY", "GBP/USD", "AUD/USD", "USD/CAD"));
         currencyPairComboBox3.setItems(FXCollections.observableArrayList("EUR/USD", "USD/JPY", "GBP/USD", "AUD/USD", "USD/CAD"));
         amountComboBox.setItems(FXCollections.observableArrayList(1, 10, 100, 1000));
-
         try {
             Context ctx = new Context("https://api-fxpractice.oanda.com", Config.TOKEN);
             AccountSummary summary = ctx.account.summary(new AccountID(Config.ACCOUNTID)).getAccount();
@@ -145,7 +171,57 @@ public class HelloController {
             e.printStackTrace();
         }
     }
+    @FXML
+    private void onClosePositionClick() {
+        String positionId = positionIdTextField.getText();
+        if (positionId.isEmpty()) {
+            System.out.println("A pozíció azonosítója kötelező!");
+            return;
+        }
+        try {
+            Context ctx = new Context("https://api-fxpractice.oanda.com", Config.TOKEN);
+            ctx.trade.close(new TradeCloseRequest(Config.ACCOUNTID, new TradeSpecifier(positionId)));
+            closeStatus.setText("Sikeres törlés!");
 
+        } catch (Exception e) {
+            System.out.println("Hiba történt a pozíció bezárásakor: " + e.getMessage());
+            closeStatus.setText("Valami baj van. Biztos létezik ez a position?");
+        }
+    }
+    @FXML
+    private void onShowOpenPositionsClick() {
+        try {
+            Context ctx = new ContextBuilder(Config.URL)
+                    .setToken(Config.TOKEN)
+                    .setApplication("OpenPositionsApp")
+                    .build();
+            AccountID accountId = Config.ACCOUNTID;
+            NyitotttradekKiír(ctx, accountId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error fetching open positions: " + e.getMessage());
+        }
+    }
+    void NyitotttradekKiír(Context ctx, AccountID accountId) throws ExecuteException, RequestException {
+        ObservableList<String[]> tradeData = FXCollections.observableArrayList();
+        try{
+            List<Trade> trades = ctx.trade.listOpen(accountId).getTrades();
+            for (Trade trade : trades) {
+                String[] tradeDataArray = new String[6];
+                tradeDataArray[0] = String.valueOf(trade.getId());
+                tradeDataArray[1] = trade.getInstrument().toString();
+                tradeDataArray[2] = trade.getOpenTime().toString();
+                tradeDataArray[3] = String.valueOf(trade.getCurrentUnits());
+                tradeDataArray[4] = String.valueOf(trade.getPrice());
+                tradeDataArray[5] = String.valueOf(trade.getUnrealizedPL());
+                tradeData.add(tradeDataArray);
+            }
+            positionsTable.setItems(tradeData);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     @FXML
     private void onOpenPositionButtonClick() {
         String currencyPair = currencyPairComboBox3.getValue();
@@ -155,17 +231,12 @@ public class HelloController {
             System.out.println("Minden mező kitöltése szükséges!");
             return;
         }
-
-
         Context ctx = new ContextBuilder(Config.URL)
                 .setToken(Config.TOKEN)
                 .setApplication("HistorikusAdatok")
                 .build();
-
-        OpenDisplayClosePosition.Nyitás(ctx, Config.ACCOUNTID, currencyPair, amount, direction);
-
+        OpenPosition.Nyitás(ctx, Config.ACCOUNTID, currencyPair, amount, direction);
     }
-
     public void openGraphWindow(String currencyPair, LocalDate startDate, LocalDate endDate) {
         Stage graphStage = new Stage();
         graphStage.setTitle("Grafikon");
@@ -238,18 +309,12 @@ public class HelloController {
         return (ObservableList<String[]>) emptylist;
     }
     @FXML
-    private void showAccountInfo() {
-        contentStack.getChildren().clear();
-        contentStack.getChildren().add(accountSummaryTable);
-    }
-    @FXML
     private void handleGetPrice() {
         String selectedPair = currencyPairComboBox.getValue();
         if (selectedPair == null) {
             currentPriceLabel.setText("Kérjük válasszon devizapárt!");
             return;
         }
-
         try {
             String currentPrice = fetchCurrentPrice(selectedPair);
             currentPriceLabel.setText("Jelenlegi ár: " + currentPrice);
@@ -279,35 +344,5 @@ public class HelloController {
             e.printStackTrace();
             return "Valami baj történt: " + e.getMessage();
         }
-    }
-    @FXML
-    private void showCurrentPrice() {
-        contentStack.getChildren().clear();
-        Label currentPriceLabel = new Label("Jelenlegi ár részleg: (Placeholder)");
-        contentStack.getChildren().add(currentPriceLabel);
-    }
-    @FXML
-    private void showHistoricalPrices() {
-        contentStack.getChildren().clear();
-        Label historicalPriceLabel = new Label("Historical Prices Section (Placeholder)");
-        contentStack.getChildren().add(historicalPriceLabel);
-    }
-    @FXML
-    private void showOpenPosition() {
-        contentStack.getChildren().clear();
-        Label openPositionLabel = new Label("Open Position Section (Placeholder)");
-        contentStack.getChildren().add(openPositionLabel);
-    }
-    @FXML
-    private void showClosePosition() {
-        contentStack.getChildren().clear();
-        Label closePositionLabel = new Label("Close Position Section (Placeholder)");
-        contentStack.getChildren().add(closePositionLabel);
-    }
-    @FXML
-    private void showOpenPositions() {
-        contentStack.getChildren().clear();
-        Label openPositionsLabel = new Label("Open Positions Section (Placeholder)");
-        contentStack.getChildren().add(openPositionsLabel);
     }
 }
