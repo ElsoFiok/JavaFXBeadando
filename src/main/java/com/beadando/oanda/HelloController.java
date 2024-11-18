@@ -26,6 +26,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
 import javafx.scene.chart.CategoryAxis;
@@ -286,12 +287,16 @@ public class HelloController {
     }
     private ObservableList<String[]> fetchHistoricalPrices(String currencyPair, LocalDate  startDate, LocalDate  endDate) {
         String instrumentName = currencyPair.replace("/", "_");
+        String from = startDate.atStartOfDay(ZoneOffset.UTC).toInstant().toString();
+        String to = endDate.atStartOfDay(ZoneOffset.UTC).plusDays(1).toInstant().toString();
         Context ctx = new ContextBuilder(Config.URL)
                 .setToken(Config.TOKEN)
                 .setApplication("HistorikusAdatok")
                 .build();
         try {
             InstrumentCandlesRequest request = new InstrumentCandlesRequest(new InstrumentName(instrumentName));
+            request.setFrom(from);
+            request.setTo(to);
             request.setGranularity(CandlestickGranularity.H1);
             InstrumentCandlesResponse resp = ctx.instrument.candles(request);
             ObservableList<String[]> data = FXCollections.observableArrayList();
