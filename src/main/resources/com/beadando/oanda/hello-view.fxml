@@ -11,6 +11,8 @@
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.DatePicker?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.beadando.oanda.HelloController">
     <TabPane fx:id="mainTabPane" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" prefWidth="800" prefHeight="500">
         <Tab text="Account Info">
@@ -36,11 +38,29 @@
             </VBox>
         </Tab>
         <Tab text="Historikus árak">
-            <VBox>
-                <Label text="Select currency pair, start and end date"/>
-                <Button text="Get Historical Prices"/>
+            <VBox spacing="10" alignment="CENTER" xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx">
+                <Label text="Válasszon devizapárt, kezdő dátumot és végsődátumot."/>
+                <HBox spacing="10" alignment="CENTER">
+                    <Label text="Devizapár:"/>
+                    <ComboBox fx:id="currencyPairComboBox2" promptText="Válasszon devizapárt"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER">
+                    <Label text="Start Date:"/>
+                    <DatePicker fx:id="startDatePicker"/>
+                    <Label text="End Date:"/>
+                    <DatePicker fx:id="endDatePicker"/>
+                </HBox>
+                <Button text="Táblázat ábrázolása:" onAction="#onHistoricalButtonClick"/>
+                <TableView fx:id="historicalPricesTable" prefHeight="200">
+                    <columns>
+                        <TableColumn fx:id="dateColumn" text="Dátum"/>
+                        <TableColumn fx:id="priceColumn" text="Ár"/>
+                    </columns>
+                </TableView>
+                <Button text="Grafikon" onAction="#onGrafikonButtonClick"/>
             </VBox>
         </Tab>
+
         <Tab text="Pozíció nyitás">
             <VBox>
                 <Label text="Select currency pair, amount and direction"/>

@@ -1,23 +1,32 @@
 package com.beadando.oanda;
 
 import com.oanda.v20.ContextBuilder;
+import com.oanda.v20.instrument.CandlestickGranularity;
+import com.oanda.v20.instrument.InstrumentCandlesRequest;
 import com.oanda.v20.pricing.ClientPrice;
 import com.oanda.v20.pricing.PricingGetRequest;
 import com.oanda.v20.pricing.PricingGetResponse;
+import com.oanda.v20.primitives.InstrumentName;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Label;
 import com.oanda.v20.Context;
 import com.oanda.v20.account.AccountID;
 import com.oanda.v20.account.AccountSummary;
+import com.oanda.v20.instrument.Candlestick;
+import com.oanda.v20.instrument.InstrumentCandlesResponse;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.stage.Stage;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-
+import javafx.scene.chart.CategoryAxis;
 public class HelloController {
     @FXML
     private StackPane contentStack;
@@ -44,10 +53,28 @@ public class HelloController {
     @FXML
     private Label currentPriceLabel;
     @FXML
+    private ComboBox<String> currencyPairComboBox2;
+    @FXML
+    private TableView<String[]> historicalPricesTable;
+    @FXML
+    private TableColumn<String[], String> dateColumn;
+    @FXML
+    private TableColumn<String[], String> priceColumn;
+    @FXML
+    private DatePicker startDatePicker;
+    @FXML
+    private DatePicker endDatePicker;
+    ObservableList<String[]> data = FXCollections.observableArrayList();
+
+    @FXML
     protected void initialize() {
-        currencyPairComboBox.setItems(FXCollections.observableArrayList(
-                "EUR/USD", "USD/JPY", "GBP/USD", "AUD/USD", "USD/CAD"
-        ));
+        dateColumn.prefWidthProperty().bind(historicalPricesTable.widthProperty().multiply(0.5));
+        priceColumn.prefWidthProperty().bind(historicalPricesTable.widthProperty().multiply(0.5));
+        currencyPairComboBox2.setItems(FXCollections.observableArrayList("EUR/USD", "USD/JPY", "GBP/USD", "AUD/USD", "USD/CAD"));
+        dateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[0]));
+        priceColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[1]));
+        currencyPairComboBox.setItems(FXCollections.observableArrayList("EUR/USD", "USD/JPY", "GBP/USD", "AUD/USD", "USD/CAD"));
+
         try {
             Context ctx = new Context("https://api-fxpractice.oanda.com", Config.TOKEN);
             AccountSummary summary = ctx.account.summary(new AccountID(Config.ACCOUNTID)).getAccount();
@@ -101,6 +128,79 @@ public class HelloController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public void openGraphWindow(String currencyPair, LocalDate startDate, LocalDate endDate) {
+        Stage graphStage = new Stage();
+        graphStage.setTitle("Grafikon");
+        CategoryAxis xAxis = new CategoryAxis();
+        xAxis.setLabel("Dátum");
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Ár");
+        LineChart<String, Number> lineChart = new LineChart<>(xAxis, yAxis);
+        XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName(currencyPair != null ? currencyPair : "Nincs adat");
+        if (currencyPair == null || startDate.toString().isEmpty() || endDate.toString().isEmpty()) {
+            System.out.println("Nincs megadva bemenet.Így üres a grafikon. :(");
+        } else {
+            try {
+                List<String[]> historicalData = fetchHistoricalPrices(currencyPair, startDate, endDate);
+                for (String[] entry : historicalData) {
+                    String date = entry[0];
+                    double price = Double.parseDouble(entry[1]);
+                    series.getData().add(new XYChart.Data<>(date, price));
+                }
+            } catch (Exception e) {
+                System.out.println("Valami baj van: " + e.getMessage());
+            }
+        }
+        lineChart.getData().add(series);
+        Scene scene = new Scene(lineChart, 800, 600);
+        graphStage.setScene(scene);
+        graphStage.show();
+    }
+    @FXML
+    private void onGrafikonButtonClick() {
+        String currencyPair = currencyPairComboBox2.getValue();
+        LocalDate  startDate = startDatePicker.getValue();
+        LocalDate  endDate = endDatePicker.getValue();
+        openGraphWindow(currencyPair, startDate, endDate);
+    }
+    @FXML
+    private void onHistoricalButtonClick() {
+        String currencyPair = currencyPairComboBox2.getValue();
+        LocalDate startDate = startDatePicker.getValue();
+        LocalDate endDate = endDatePicker.getValue();
+        if (currencyPair == null || startDate == null || endDate == null) {
+            System.out.println("Valami kimaradt :))))))))))");
+            return;
+        }
+        historicalPricesTable.setItems(fetchHistoricalPrices(currencyPair, startDate, endDate));
+    }
+
+    private ObservableList<String[]> fetchHistoricalPrices(String currencyPair, LocalDate  startDate, LocalDate  endDate) {
+        String instrumentName = currencyPair.replace("/", "_");
+        Context ctx = new ContextBuilder(Config.URL)
+                .setToken(Config.TOKEN)
+                .setApplication("HistorikusAdatok")
+                .build();
+
+        try {
+            InstrumentCandlesRequest request = new InstrumentCandlesRequest(new InstrumentName(instrumentName));
+            request.setGranularity(CandlestickGranularity.H1);
+            InstrumentCandlesResponse resp = ctx.instrument.candles(request);
+            ObservableList<String[]> data = FXCollections.observableArrayList();
+            for (Candlestick candle : resp.getCandles()) {
+                String time = candle.getTime().toString();
+                String closePrice = candle.getMid().getC().toString();
+                data.add(new String[]{time, closePrice});
+            }
+            return data;
+        } catch (Exception e) {
+            System.out.println("Valami baj van: " + e.getMessage());
+            e.printStackTrace();
+        }
+        List<String[]> emptylist = FXCollections.observableArrayList();
+        return (ObservableList<String[]>) emptylist;
     }
     @FXML
     private void showAccountInfo() {
